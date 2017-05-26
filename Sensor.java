@@ -12,7 +12,11 @@ import java.util.*;
 public abstract class Sensor extends java.util.Observable
 {
 	protected static Integer count = 0;
+	
+	//Permanent, idNum cannot change
 	private Integer idNum;
+	
+	//Permanent, location cannot change
 	private String location;
 	private Boolean powerStatus;
 	private Boolean manualStatus;
@@ -50,11 +54,13 @@ public abstract class Sensor extends java.util.Observable
 	}
 	
 	//Getter Functions
+
 	public Integer getIdNum()
 	{
 		return idNum;
 	}
 	
+	//
 	public String getLocation()
 	{
 		return location;
@@ -158,7 +164,18 @@ public abstract class Sensor extends java.util.Observable
 		}
 	}
 	
-	public void setTime(String fromTime, String toTime) 
+	//Setter Functions
+	public void setPowerStatus(Boolean powerStatus)
+	{
+		this.powerStatus = powerStatus;
+	}
+	
+	public void setManualStatus(Boolean manualStatus)
+	{
+		this.setManualStatus(manualStatus);
+	}
+	
+	public void setSchedule(String fromTime, String toTime) 
 	{
 		this.fromTime = LocalTime.parse(fromTime);
 		this.toTime = LocalTime.parse(toTime);
