@@ -87,35 +87,81 @@ public abstract class Sensor extends java.util.Observable
 		if (alarmStatus == false)
 		{
 			currentTime = LocalTime.now();
+			
+			//Checks if sensor is off, alarm cannot trip if sensor is off
 			if (powerStatus == false)
 			{
 				alarmStatus = false;
 				return false;
 			}
+			
+			//Check if the sensors are on a schedule
 			else if (manualStatus == false)
 			{
-				if (fromTime.isAfter(currentTime) && toTime.isBefore(currentTime))
+				//Checks if fromTime is before toTime
+				if (fromTime.isBefore(toTime))
 				{
-					setChanged();
-					alarmStatus = true;
-					notifyObservers(new Boolean(alarmStatus));
-					return true;
+					//In this case, current time is after fromTime and before toTime
+					if (currentTime.isAfter(fromTime) && currentTime.isBefore(toTime))
+					{
+						alarmStatus = true;
+						setChanged();
+						notifyObservers(new Boolean(alarmStatus));
+						return true;
+					}
+					
+					//If not in the scheduled time, does not trip
+					else
+					{
+						alarmStatus = false;
+						return false;
+					}
 				}
+				
+				//Checks if fromTime is after toTime
+				//This has a special case
 				else
 				{
-					alarmStatus = false;
-					return false;
+					//currentTime can be both after fromTime and toTime, or aslso before fromTime and toTime
+					if ((currentTime.isAfter(fromTime) && currentTime.isAfter(toTime)) || (currentTime.isBefore(fromTime) && currentTime.isBefore(toTime) ) )
+					{
+						alarmStatus = true;
+						setChanged();
+						notifyObservers(new Boolean(alarmStatus));
+						return true;
+					}
+					
+					//If not in the scheduled time, does not trip
+					else
+					{
+						alarmStatus = false;
+						return false;
+					}
 				}
+				
+
+
 			}
+			
+			//If the alarm is tripped, on, and in manual mode, rings the alarm
+			alarmStatus = true;
 			setChanged();
 			notifyObservers(new Boolean(alarmStatus));
-			alarmStatus = true;
 			return true;
+
 		}
+		
+		//Otherwise alarm is already tripped
 		else
 		{
 			return alarmStatus;
 		}
+	}
+	
+	public void setTime(String fromTime, String toTime) 
+	{
+		this.fromTime = LocalTime.parse(fromTime);
+		this.toTime = LocalTime.parse(toTime);
 	}
 	
 	
