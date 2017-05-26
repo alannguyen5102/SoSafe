@@ -20,6 +20,7 @@ public abstract class Sensor extends java.util.Observable
 	
 	private LocalTime fromTime;
 	private LocalTime toTime;
+	private LocalTime currentTime;
 	
 	//Creates a Sensor with a location
 	public Sensor(String location)
@@ -36,7 +37,7 @@ public abstract class Sensor extends java.util.Observable
 	
 	
 	//Creates a Sensor with Timing
-	public Sensor(String location, LocalTime fromTime, LocalTime toTime)
+	public Sensor(String location, String fromTime, String toTime)
 	{
 		++count;
 		this.location = location;
@@ -44,8 +45,8 @@ public abstract class Sensor extends java.util.Observable
 		powerStatus = true;
 		manualStatus = false;
 		alarmStatus = false;
-		this.fromTime = fromTime;
-		this.toTime = toTime;	
+		this.fromTime = LocalTime.parse(fromTime);
+		this.toTime = LocalTime.parse(toTime);	
 	}
 	
 	//Getter Functions
@@ -78,6 +79,43 @@ public abstract class Sensor extends java.util.Observable
 	{
 		System.out.println("Start: " + fromTime);
 		System.out.println("End " + toTime);
+	}
+	
+	public Boolean tripSensor()
+	{
+		//Checks if alarm is untripped
+		if (alarmStatus == false)
+		{
+			currentTime = LocalTime.now();
+			if (powerStatus == false)
+			{
+				alarmStatus = false;
+				return false;
+			}
+			else if (manualStatus == false)
+			{
+				if (fromTime.isAfter(currentTime) && toTime.isBefore(currentTime))
+				{
+					setChanged();
+					alarmStatus = true;
+					notifyObservers(new Boolean(alarmStatus));
+					return true;
+				}
+				else
+				{
+					alarmStatus = false;
+					return false;
+				}
+			}
+			setChanged();
+			notifyObservers(new Boolean(alarmStatus));
+			alarmStatus = true;
+			return true;
+		}
+		else
+		{
+			return alarmStatus;
+		}
 	}
 	
 	
