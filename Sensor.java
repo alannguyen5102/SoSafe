@@ -16,10 +16,21 @@ public abstract class Sensor extends java.util.Observable
 	private String location;
 	private Boolean powerStatus;
 	private Boolean manualStatus;
+	private Boolean alarmStatus;
 	
-	//Need to change this
 	private LocalTime fromTime;
-	private LocalTime ToTime;
+	private LocalTime toTime;
 	
+	public Sensor(String location)
+	{
+		++count;
+		this.location = location;
+		idNum = count;
+		powerStatus = true;
+		manualStatus = true;
+		alarmStatus = false;
+		fromTime = null;
+		toTime = null;	
+	}
 
 }
