@@ -49,6 +49,10 @@ public abstract class Billing implements Observer {
 		this.toDate = toDate;
 	}
 
+
+	
+
+
 	/**
 	 * @param serviceContractId
 	 * @param customerName
@@ -57,15 +61,13 @@ public abstract class Billing implements Observer {
 	 * @param customerContact
 	 * @param fromDate
 	 * @param toDate
-	 * @param initalCharge
-	 * @param numSensorCharge
-	 * @param callCharge
+	 * @param numSensors
+	 * @param numCalls
 	 * @param totalCharge
 	 */
 	public Billing(Integer serviceContractId, String customerName, String addressProperty,
-			ArrayList<String> contactNumber, String customerContact, String fromDate, String toDate,
-			Double initalCharge, Double numSensorCharge, Double callCharge, Double totalCharge) {
-		
+			ArrayList<String> contactNumber, String customerContact, String fromDate, String toDate, Integer numSensors,
+			Integer numCalls, Double totalCharge) {
 		this.serviceContractId = serviceContractId;
 		this.customerName = customerName;
 		this.addressProperty = addressProperty;
@@ -77,6 +79,9 @@ public abstract class Billing implements Observer {
 		this.numCalls = numCalls;
 		this.totalCharge = totalCharge;
 	}
+
+
+
 
 
 	/**
@@ -245,7 +250,7 @@ public abstract class Billing implements Observer {
 	/**
 	 * @return the numSensorCharge which is number of sensors * price per sensor
 	 */
-	public Double getNumSensorCharge() {
+	public Double getNumSensorsCharge() {
 		return getNumSensors().doubleValue() * getSensorConstant();
 	}
 	
@@ -255,7 +260,29 @@ public abstract class Billing implements Observer {
 	 * @returns the initial charge, sensor charge, and call charges
 	 */
 	public Double generateTotalCharge() {
-		return getInitalCharge() + getNumSensorCharge() + getCallCharge();
+		return getInitalCharge() + getNumSensorsCharge() + getCallCharge();
+	}
+	
+	public void showCustomerInformation() {
+		System.out.println("Service Contract ID: " + this.serviceContractId);
+		System.out.println("Customer Name      : " + this.customerName);
+		System.out.println("Property Address   : " + this.addressProperty);
+		for(String elem : this.contactNumber) {
+			System.out.println("Contact Number     : " + elem);
+		}
+		System.out.println("Customer Contact   : " + this.customerContact);
+		System.out.println("Service From Date  : " + this.fromDate);
+		System.out.println("Service To Date    : " + this.toDate);
+		
+	}
+	
+	public void showCharges () {
+		System.out.println("Installation Charge: $" + getInitalCharge());
+		System.out.println("Sensor Installation: $" + getNumSensorsCharge());
+		System.out.println("----" + getSensorConstant() + "*" + getNumSensors());
+		System.out.println("Monitoring Calls   : $" + getCallCharge());
+		System.out.println("----" + getCallConstant() + "*" + getNumCalls());
+		System.out.println("Total Cost: $" + generateTotalCharge());
 	}
 	
 	/**
@@ -264,6 +291,11 @@ public abstract class Billing implements Observer {
 	
 	public void incrementCall() {
 		this.numCalls++;
+	}
+	
+	public void update( Observable observable, Object numCalls ) {
+		this.numCalls = ((Integer)numCalls); 
+		generateTotalCharge();
 	}
 	
 	
