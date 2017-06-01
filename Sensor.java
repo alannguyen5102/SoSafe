@@ -105,6 +105,12 @@ public abstract class Sensor extends java.util.Observable
 		System.out.println("End " + toTime);
 	}
 	
+	public LocalTime getLocalTime()
+	{
+		currentTime = LocalTime.now();
+		return currentTime;
+	}
+	
 	public Boolean tripSensor()
 	{
 		//Checks if alarm is untripped
