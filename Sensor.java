@@ -27,6 +27,9 @@ public abstract class Sensor extends java.util.Observable
 	private LocalTime currentTime;
 	
 	//Creates a Sensor with a location
+	/*
+	 * @param location
+	 */
 	public Sensor(String location)
 	{
 		++count;
@@ -52,6 +55,21 @@ public abstract class Sensor extends java.util.Observable
 		this.fromTime = LocalTime.parse(fromTime);
 		this.toTime = LocalTime.parse(toTime);	
 	}
+	
+	/*
+	 * Creates a sensor with all fields
+	 */
+	public Sensor(Integer idNum, String location, Boolean powerStatus, Boolean manualStatus, Boolean alarmStatus, String fromTime, String toTime)
+	{
+		this.idNum = idNum;
+		this.location = location;
+		this.powerStatus = powerStatus;
+		this.manualStatus = manualStatus;
+		this.alarmStatus = alarmStatus;
+		this.fromTime = LocalTime.parse(fromTime);
+		this.toTime = LocalTime.parse(toTime);	
+	}
+	
 	
 	//Getter Functions
 
@@ -172,7 +190,7 @@ public abstract class Sensor extends java.util.Observable
 	
 	public void setManualStatus(Boolean manualStatus)
 	{
-		this.setManualStatus(manualStatus);
+		this.manualStatus = manualStatus;
 	}
 	
 	public void setSchedule(String fromTime, String toTime) 
