@@ -28,12 +28,11 @@ public class AlarmSystem {
 		
 	}
 	
-	public AlarmSystem(Boolean includesFireSystem, String fileName) throws IOException {
-		if (includesFireSystem) {
-			motionSensors = new ArrayList<MotionSensor>();
-			temperatureSensors = new ArrayList<TemperatureSensor>();
-			loadSensorsFromFile(fileName);
-		}
+	public AlarmSystem(String fileName) throws IOException {
+		motionSensors = new ArrayList<MotionSensor>();
+		temperatureSensors = new ArrayList<TemperatureSensor>();
+		loadSensorsFromFile(fileName);
+		
 		
 	}
 	
@@ -56,11 +55,11 @@ public class AlarmSystem {
 		Boolean alarmStatus = Boolean.valueOf(tokens[6]);
 		String fromTime = tokens[7];
 		String toTime = tokens[8];
-		if ( "M/F".equals(tokens[1]) || "M".equals(tokens[1]) ) {
+		if ( "F".equals(tokens[1]) || "M".equals(tokens[1]) ) {
 			MotionSensor newMotionSensor = new MotionSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
 			motionSensors.add(newMotionSensor);
 		}
-		if ("M/F".equals(tokens[1]) && includesFireSystem ) {
+		if ("F".equals(tokens[1])) {
 			TemperatureSensor newTemperatureSensor = new TemperatureSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
 			temperatureSensors.add(newTemperatureSensor);
 		}
