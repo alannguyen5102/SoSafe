@@ -12,7 +12,7 @@ import java.util.*;
 public abstract class Sensor extends java.util.Observable
 {
 	protected static Integer count = 0;
-	
+	public String message;
 	//Permanent, idNum cannot change
 	private Integer idNum;
 	
@@ -40,6 +40,8 @@ public abstract class Sensor extends java.util.Observable
 		alarmStatus = false;
 		this.fromTime = null;
 		this.toTime = null;	
+		
+		message = new String("ERROR");
 	}
 	
 	
@@ -54,6 +56,8 @@ public abstract class Sensor extends java.util.Observable
 		alarmStatus = false;
 		this.fromTime = LocalTime.parse(fromTime);
 		this.toTime = LocalTime.parse(toTime);	
+		
+		message = new String("ERROR");
 	}
 	
 	/*
@@ -68,6 +72,7 @@ public abstract class Sensor extends java.util.Observable
 		this.alarmStatus = alarmStatus;
 		this.fromTime = LocalTime.parse(fromTime);
 		this.toTime = LocalTime.parse(toTime);	
+		message = new String("ERROR");
 	}
 	
 	
@@ -157,7 +162,7 @@ public abstract class Sensor extends java.util.Observable
 					{
 						alarmStatus = true;
 						setChanged();
-						notifyObservers(new Boolean(alarmStatus));
+						notifyObservers(message);
 						return true;
 					}
 					
@@ -176,7 +181,7 @@ public abstract class Sensor extends java.util.Observable
 			//If the alarm is tripped, on, and in manual mode, rings the alarm
 			alarmStatus = true;
 			setChanged();
-			notifyObservers(new Boolean(alarmStatus));
+			notifyObservers(message);
 			return true;
 
 		}
