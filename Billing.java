@@ -293,6 +293,15 @@ public abstract class Billing implements Observer {
 		this.numCalls++;
 	}
 	
+	/**
+	 * Increments the number of sensors
+	 */
+	
+	public void incrementSensors() {
+		this.numSensors++;
+	}
+	
+	
 	public void update( Observable observable, Object numCalls ) {
 		this.numCalls = ((Integer)numCalls); 
 		generateTotalCharge();
