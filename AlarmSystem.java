@@ -21,7 +21,7 @@ public class AlarmSystem implements Observer{
 	private IntruderBilling billingIntrusion;
 	private FireBilling billingFire;
 	private Boolean fireAlert;
-	private Boolean instruderAlert;
+	private Boolean intruderAlert;
 	
 
 	
@@ -63,11 +63,13 @@ public class AlarmSystem implements Observer{
 			MotionSensor newMotionSensor = new MotionSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
 			newMotionSensor.addObserver(this);
 			motionSensors.add(newMotionSensor);
+			billingIntrusion.incrementSensors();
 		}
 		if ("F".equals(tokens[1])) {
 			TemperatureSensor newTemperatureSensor = new TemperatureSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
 			newTemperatureSensor.addObserver(this);
 			temperatureSensors.add(newTemperatureSensor);
+			billingFire.incrementSensors();
 		}
 		
 		
@@ -78,6 +80,27 @@ public class AlarmSystem implements Observer{
 		String message = (String)arg;
 		System.out.println(message);
 		
+	}
+	
+	public Double generateBill() {
+		Double total = 0.00;
+		if (motionSensors.size() > 0) {
+			total = billingIntrusion.generateTotalCharge() + billingFire.generateTotalCharge() - 60;
+		}
+		else {
+			total = billingIntrusion.generateTotalCharge() + billingFire.generateTotalCharge();
+		}
+		
+		return total;
+	}
+	
+	public void callMonitoringService(String message) {
+		if ("FIRE".equals(message)) {
+			billingFire.incrementCall();
+		}
+		else if ("INTRUDER".equals(message)) {
+			billingIntrusion.incrementCall();
+		}
 	}
 	
 
