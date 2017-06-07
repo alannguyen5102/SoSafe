@@ -8,17 +8,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 /**
  * @author alannguyen
  *
  */
-public class AlarmSystem {
+public class AlarmSystem implements Observer{
 
-	Boolean includesFireSystem;
 	private ArrayList<MotionSensor> motionSensors;
 	private ArrayList<TemperatureSensor> temperatureSensors;
 	private IntruderBilling billingIntrusion;
 	private FireBilling billingFire;
+	private Boolean fireAlert;
+	private Boolean instruderAlert;
+	
 
 	
 	/**
@@ -57,13 +61,22 @@ public class AlarmSystem {
 		String toTime = tokens[8];
 		if ( "F".equals(tokens[1]) || "M".equals(tokens[1]) ) {
 			MotionSensor newMotionSensor = new MotionSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
+			newMotionSensor.addObserver(this);
 			motionSensors.add(newMotionSensor);
 		}
 		if ("F".equals(tokens[1])) {
 			TemperatureSensor newTemperatureSensor = new TemperatureSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
+			newTemperatureSensor.addObserver(this);
 			temperatureSensors.add(newTemperatureSensor);
 		}
 		
+		
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		String message = (String)arg;
+		System.out.println(message);
 		
 	}
 	
