@@ -23,4 +23,3 @@ public class DrawImagePanel extends JPanel{
 	}
 	
 }
-

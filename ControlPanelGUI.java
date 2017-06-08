@@ -38,8 +38,11 @@ public class ControlPanelGUI {
 	AlarmSystem soSafe;
 	LocalTime fromTime = LocalTime.MIN;
 	LocalTime toTime = LocalTime.MAX;
+	Boolean enteredPassword;
+	
 	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
 		this.soSafe = soSafe;
+		enteredPassword = false;
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);

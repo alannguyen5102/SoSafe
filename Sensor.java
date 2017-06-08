@@ -143,7 +143,7 @@ public abstract class Sensor extends java.util.Observable
 					{
 						alarmStatus = true;
 						setChanged();
-						notifyObservers(message);
+						notifyObservers(message + " at " + location);
 						return true;
 					}
 					
@@ -164,7 +164,7 @@ public abstract class Sensor extends java.util.Observable
 					{
 						alarmStatus = true;
 						setChanged();
-						notifyObservers(message);
+						notifyObservers(message + " at " + location);
 						return true;
 					}
 					
@@ -183,7 +183,7 @@ public abstract class Sensor extends java.util.Observable
 			//If the alarm is tripped, on, and in manual mode, rings the alarm
 			alarmStatus = true;
 			setChanged();
-			notifyObservers(message);
+			notifyObservers(message + " at " + location);
 			return true;
 
 		}
