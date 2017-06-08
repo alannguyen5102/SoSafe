@@ -70,6 +70,7 @@ public abstract class Sensor extends java.util.Observable
 		this.powerStatus = powerStatus;
 		this.manualStatus = manualStatus;
 		this.alarmStatus = alarmStatus;
+		
 		this.fromTime = LocalTime.parse(fromTime);
 		this.toTime = LocalTime.parse(toTime);	
 		message = new String("ERROR");
@@ -118,6 +119,7 @@ public abstract class Sensor extends java.util.Observable
 	
 	public Boolean tripSensor()
 	{
+		System.out.println("Checking if Tripped: " + alarmStatus);
 		//Checks if alarm is untripped
 		if (alarmStatus == false)
 		{
@@ -141,7 +143,7 @@ public abstract class Sensor extends java.util.Observable
 					{
 						alarmStatus = true;
 						setChanged();
-						notifyObservers(new Boolean(alarmStatus));
+						notifyObservers(message);
 						return true;
 					}
 					

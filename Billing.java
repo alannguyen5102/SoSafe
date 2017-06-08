@@ -44,6 +44,8 @@ public abstract class Billing implements Observer {
 		this.addressProperty = addressProperty;
 		this.contactNumber = contactNumber;
 		this.customerContact = customerContact;
+		this.numSensors = 0;
+		this.numCalls = 0;
 		this.fromDate = new String("01-01");
 		this.toDate = new String("12-31");
 	}
@@ -64,6 +66,8 @@ public abstract class Billing implements Observer {
 		this.addressProperty = addressProperty;
 		this.contactNumber = contactNumber;
 		this.customerContact = customerContact;
+		this.numSensors = 0;
+		this.numCalls = 0;
 		this.fromDate = fromDate;
 		this.toDate = toDate;
 	}

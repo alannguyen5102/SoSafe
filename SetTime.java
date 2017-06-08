@@ -31,11 +31,11 @@ public class SetTime {
 		rootPanel.add(closePanel);
 		
 	
-		timeArray.add("00");timeArray.add("01");timeArray.add("02");timeArray.add("03");timeArray.add("04");
-		timeArray.add("05");timeArray.add("06");timeArray.add("07");timeArray.add("08");timeArray.add("09");
-		timeArray.add("10");timeArray.add("11");timeArray.add("12");timeArray.add("13");timeArray.add("14");
-		timeArray.add("15");timeArray.add("16");timeArray.add("17");timeArray.add("18");timeArray.add("19");
-		timeArray.add("20");timeArray.add("21");timeArray.add("22");timeArray.add("23");
+		timeArray.add("00:00");timeArray.add("01:00");timeArray.add("02:00");timeArray.add("03:00");timeArray.add("04:00");
+		timeArray.add("05:00");timeArray.add("06:00");timeArray.add("07:00");timeArray.add("08:00");timeArray.add("09:00");
+		timeArray.add("10:00");timeArray.add("11:00");timeArray.add("12:00");timeArray.add("13:00");timeArray.add("14:00");
+		timeArray.add("15:00");timeArray.add("16:00");timeArray.add("17:00");timeArray.add("18:00");timeArray.add("19:00");
+		timeArray.add("20:00");timeArray.add("21:00");timeArray.add("22:00");timeArray.add("23:00");
 
 
 		JComboBox<String> toTimeCombo;

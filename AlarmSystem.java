@@ -28,6 +28,8 @@ public class AlarmSystem implements Observer{
 	
 
 	
+
+
 	/**
 	 * 
 	 */
@@ -40,10 +42,41 @@ public class AlarmSystem implements Observer{
 		temperatureSensors = new ArrayList<TemperatureSensor>();
 		loadUserFromFile(userFile, id);
 		loadSensorsFromFile(fileName);
+		System.out.print("How many: "+ temperatureSensors.size());
+		
 		
 		
 		
 	}
+	/**
+	 * @return the motionSensors
+	 */
+	public ArrayList<MotionSensor> getMotionSensors() {
+		return motionSensors;
+	}
+
+	/**
+	 * @return the temperatureSensors
+	 */
+	public ArrayList<TemperatureSensor> getTemperatureSensors() {
+		return temperatureSensors;
+	}
+
+	/**
+	 * @return the billingIntrusion
+	 */
+	public IntruderBilling getBillingIntrusion() {
+		return billingIntrusion;
+	}
+
+	/**
+	 * @return the billingFire
+	 */
+	public FireBilling getBillingFire() {
+		return billingFire;
+	}
+	
+	
 	public void loadUserFromFile(String fileName, String id) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(fileName));
         // Loop as long as there are input lines.

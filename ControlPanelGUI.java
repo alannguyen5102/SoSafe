@@ -146,7 +146,11 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									display.IntruderDetected();
+									
+									//TODO HARD CODED TO FIRST SENSOR
+									soSafe.getMotionSensors().get(0).tripSensor();
 									JOptionPane.showInputDialog("Give Master Password");
+									//TODO Timer 
 									
 
 								}
@@ -179,7 +183,9 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									display.FirerDetected();
+									soSafe.getTemperatureSensors().get(0).tripSensor();
 									JOptionPane.showInputDialog("Give Master Password");
+									//TODO Timer 
 
 								}
 								else 
