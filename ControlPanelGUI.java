@@ -34,9 +34,10 @@ public class ControlPanelGUI {
 	Thread aWorker;
 	Display display = new Display();
 	String userId = null, userName = null, password = null, hsPass = null;
+	AlarmSystem soSafe;
 
-	public ControlPanelGUI() throws IOException, NoSuchAlgorithmException {
-
+	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
+		this.soSafe = soSafe;
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);
