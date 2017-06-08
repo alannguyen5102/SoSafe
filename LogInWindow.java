@@ -134,7 +134,7 @@ public class LogInWindow {
 							
 							frame.dispose();
 							soSafe = new AlarmSystem("sensors.txt", "user.txt", userId);
-							ControlPanelGUI cpg = new ControlPanelGUI();
+							ControlPanelGUI cpg = new ControlPanelGUI(soSafe);
 						} else {
 							JOptionPane.showMessageDialog(null, "Username/Password doesn't match");
 							passwordTextField.setText("");
