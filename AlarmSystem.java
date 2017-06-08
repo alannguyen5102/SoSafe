@@ -3,8 +3,10 @@
  */
 package sosafesystems;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class AlarmSystem implements Observer{
 	private FireBilling billingFire;
 	private Boolean fireAlert;
 	private Boolean intruderAlert;
+	private LocalTime currentTime;
 	
 
 	
@@ -32,14 +35,28 @@ public class AlarmSystem implements Observer{
 		
 	}
 	
-	public AlarmSystem(String fileName) throws IOException {
+	public AlarmSystem(String fileName, String userFile, String id) throws IOException {
 		motionSensors = new ArrayList<MotionSensor>();
 		temperatureSensors = new ArrayList<TemperatureSensor>();
+		loadUserFromFile(userFile, id);
 		loadSensorsFromFile(fileName);
 		
 		
+		
 	}
-	
+	public void loadUserFromFile(String fileName, String id) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        // Loop as long as there are input lines.
+        String line = null;
+        while ((line=reader.readLine()) != null) {
+        	String [] tokens = line.split("\\*");
+        	if (tokens[0].equals(id)) {
+        		addUser(line);
+        	}
+        	
+        }
+        reader.close();
+	}
 	public void loadSensorsFromFile(String fileName) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(fileName));
         // Loop as long as there are input lines.
@@ -49,7 +66,26 @@ public class AlarmSystem implements Observer{
         }
         reader.close();
 	}
-	
+	public void addUser(String line) {
+		String [] tokens = line.split("\\*");
+		Integer id = Integer.parseInt(tokens[0]);
+		String name = tokens[1];
+		String address = tokens[3];
+		String service = tokens[4];
+		String contact1 = tokens[5];
+		String contact2 = tokens[5];
+		
+		ArrayList<String> contacts = new ArrayList<String>();
+		contacts.add(contact1);
+		contacts.add(contact2);
+		if ("F".equals(tokens[4]) || "M".equals(tokens[4]) ) {
+			
+			billingIntrusion = new IntruderBilling(id, name, address, contacts, "999");
+		}
+		if ("F".equals(tokens[4])) {
+			billingFire = new FireBilling(id, name, address, contacts, "999");
+		}
+	}
 	public void addSensors(String line) {
 		String [] tokens = line.split("\\*");
 		int sensorId = Integer.parseInt(tokens[2]);
@@ -74,12 +110,17 @@ public class AlarmSystem implements Observer{
 		
 		
 	}
+	
+	
 
 	@Override
 	public void update(Observable o, Object arg) {
 		String message = (String)arg;
+		currentTime = LocalTime.now();
 		System.out.println(message);
 		callContacts(message);
+		//TODO timer?
+		
 		
 	}
 	
@@ -127,6 +168,30 @@ public class AlarmSystem implements Observer{
 			System.out.println("Error: No Sensors");
 			
 		}
+	}
+	/* 
+	 * @param message the type of occurrence
+	 * @param currentTime the time the occurrence happened 
+	 * @throws NumberFormatException
+	 * @throws IOException
+	 */
+	public void logCall(String message, LocalTime currentTime) throws NumberFormatException, IOException {
+		String logString = message + " occured at " + currentTime.toString();
+		writeInfoToFile("log.txt", logString);
+	}
+	/* 
+	 * @param fileName The file name
+	 * @throws NumberFormatException
+	 * @throws IOException
+	 */
+	public void writeInfoToFile(String fileName, String data) throws IOException, NumberFormatException {
+		
+		FileWriter fw = new FileWriter(fileName,true);
+		BufferedWriter writer = new BufferedWriter(fw);
+		writer.newLine();
+        writer.write(data);
+        writer.close();
+
 	}
 	
 

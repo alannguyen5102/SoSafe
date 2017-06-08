@@ -28,6 +28,25 @@ public abstract class Billing implements Observer {
 	
 	
 
+	/**
+	 * @param serviceContractId
+	 * @param customerName
+	 * @param addressProperty
+	 * @param contactNumber
+	 * @param customerContact
+	 * @param fromDate
+	 * @param toDate
+	 */
+	public Billing(Integer serviceContractId, String customerName, String addressProperty,
+			ArrayList<String> contactNumber, String customerContact) {
+		this.serviceContractId = serviceContractId;
+		this.customerName = customerName;
+		this.addressProperty = addressProperty;
+		this.contactNumber = contactNumber;
+		this.customerContact = customerContact;
+		this.fromDate = new String("01-01");
+		this.toDate = new String("12-31");
+	}
 
 	/**
 	 * @param serviceContractId

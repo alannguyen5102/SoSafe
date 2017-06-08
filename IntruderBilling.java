@@ -17,6 +17,19 @@ public class IntruderBilling extends Billing {
 	 * @param addressProperty
 	 * @param contactNumber
 	 * @param customerContact
+
+	 */
+	public IntruderBilling(Integer serviceContractId, String customerName, String addressProperty,
+			ArrayList<String> contactNumber, String customerContact) {
+		super(serviceContractId, customerName, addressProperty, contactNumber, customerContact);
+		// TODO Auto-generated constructor stub
+	}
+	/**
+	 * @param serviceContractId
+	 * @param customerName
+	 * @param addressProperty
+	 * @param contactNumber
+	 * @param customerContact
 	 * @param fromDate
 	 * @param toDate
 	 */

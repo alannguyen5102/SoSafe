@@ -38,8 +38,8 @@ public abstract class Sensor extends java.util.Observable
 		powerStatus = true;
 		manualStatus = true;
 		alarmStatus = false;
-		this.fromTime = null;
-		this.toTime = null;	
+		this.fromTime = LocalTime.MIN;
+		this.toTime = LocalTime.MAX;	
 		
 		message = new String("ERROR");
 	}
