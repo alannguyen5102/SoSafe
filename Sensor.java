@@ -25,6 +25,8 @@ public abstract class Sensor extends java.util.Observable
 	private LocalTime fromTime;
 	private LocalTime toTime;
 	private LocalTime currentTime;
+	private LocalTime checkFromTime;
+	private LocalTime checkToTime;
 	
 	//Creates a Sensor with a location
 	/*
@@ -117,7 +119,7 @@ public abstract class Sensor extends java.util.Observable
 		return currentTime;
 	}
 	
-	public Boolean tripSensor()
+	public Boolean tripSensor(LocalTime checkFromTime, LocalTime checkToTime)
 	{
 		System.out.println("Checking if Tripped: " + alarmStatus);
 		//Checks if alarm is untripped
@@ -132,14 +134,14 @@ public abstract class Sensor extends java.util.Observable
 				return false;
 			}
 			
-			//Check if the sensors are on a schedule
-			else if (manualStatus == false)
+			//Check if the sensors are on
+			else if (powerStatus == true)
 			{
 				//Checks if fromTime is before toTime
-				if (fromTime.isBefore(toTime))
+				if (fromTime.isBefore(checkToTime))
 				{
 					//In this case, current time is after fromTime and before toTime
-					if (currentTime.isAfter(fromTime) && currentTime.isBefore(toTime))
+					if (currentTime.isAfter(checkFromTime) && currentTime.isBefore(checkToTime))
 					{
 						alarmStatus = true;
 						setChanged();
@@ -160,7 +162,7 @@ public abstract class Sensor extends java.util.Observable
 				else
 				{
 					//currentTime can be both after fromTime and toTime, or aslso before fromTime and toTime
-					if ((currentTime.isAfter(fromTime) && currentTime.isAfter(toTime)) || (currentTime.isBefore(fromTime) && currentTime.isBefore(toTime) ) )
+					if ((currentTime.isAfter(checkFromTime) && currentTime.isAfter(checkToTime)) || (currentTime.isBefore(checkFromTime) && currentTime.isBefore(checkToTime) ) )
 					{
 						alarmStatus = true;
 						setChanged();

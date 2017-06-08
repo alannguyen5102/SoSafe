@@ -10,9 +10,9 @@ import javax.swing.JPasswordField;
 
 public class Display {
 	JFrame frameDisplay = new JFrame("Status");
-	JFrame fireDisplay = new JFrame("Fire");
-	JFrame intruderDisplay = new JFrame("Intruder");
 	JLabel label3;
+	JFrame fireDisplay;
+	JFrame intruderDisplay;
 	public void Secured() {
 		
 		JPanel rootContainer = new JPanel();
@@ -37,9 +37,11 @@ public class Display {
 		frameDisplay.dispose();
 	}
 
-	public void IntruderDetected() {
+	public void IntruderDetected(String location) {
 		
-		label3 = null;
+		String info = "Intruder: " + location;
+		System.out.println(info);
+		intruderDisplay = new JFrame(info);
 		JPanel rootContainer = new JPanel();
 		intruderDisplay.add(rootContainer);
 		rootContainer.setBackground(Color.RED);
@@ -57,15 +59,17 @@ public class Display {
 	}
 	
 	public void IntruderCaught() {
-		label3 = null;
 
 		intruderDisplay.dispose();
-
+		intruderDisplay.setVisible(false);
 	}
 	
-public void FirerDetected() {
+public void FirerDetected(String location) {
 	
-		label3 = null;
+		
+		String info = "Fire: " + location;
+		fireDisplay = new JFrame(info);
+
 		JPanel rootContainer = new JPanel();
 		fireDisplay.add(rootContainer);
 		rootContainer.setBackground(Color.ORANGE);
@@ -83,6 +87,7 @@ public void FirerDetected() {
 	
 	public void FireCaught() {
 		fireDisplay.dispose();
+		fireDisplay.setVisible(false);
 	}
 
 }

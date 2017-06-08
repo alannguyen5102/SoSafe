@@ -23,9 +23,10 @@ public class SetTime {
 	ArrayList<String> timeArray = new ArrayList<>();
 	ArrayList<String> makeSensorArray = new ArrayList<String>();
 	ArrayList<String> listSensors = new ArrayList<String>();
+	AlarmSystem soSafe;
 
-	public SetTime() {
-
+	public SetTime(AlarmSystem soSafe) {
+		this.soSafe = soSafe;
 		JFrame frame = new JFrame("So-Safe: Set time");
 		JPanel rootPanel = new OpaquePanel();
 		frame.add(rootPanel);
@@ -180,32 +181,10 @@ public class SetTime {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// save the info in file
-				makeSensorArray.add(toTimeCombo.getSelectedItem().toString());
-				makeSensorArray.add("*");
-				makeSensorArray.add(fromTimeCombo.getSelectedItem().toString());
+				soSafe.setToTime(toTimeCombo.getSelectedItem().toString());
+				soSafe.setFromTime(fromTimeCombo.getSelectedItem().toString());
 
-				BufferedWriter writer = null;
-				try {
-					writer = new BufferedWriter(new FileWriter("sensors.txt", true));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-
-				for (String str : makeSensorArray) {
-					try {
-						writer.write(str);
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				try {
-					writer.newLine();
-					JOptionPane.showMessageDialog(null, "Sensor added");
-					writer.close();
-
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				
 
 				JOptionPane.showMessageDialog(null, "Sensor scheduled");
 				makeSensorArray.clear();

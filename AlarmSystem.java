@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
 /**
  * @author alannguyen
  *
@@ -25,6 +26,8 @@ public class AlarmSystem implements Observer{
 	private Boolean fireAlert;
 	private Boolean intruderAlert;
 	private LocalTime currentTime;
+	private LocalTime fromTime = LocalTime.NOON;
+	private LocalTime toTime = LocalTime.MAX;
 	
 
 	
@@ -42,12 +45,41 @@ public class AlarmSystem implements Observer{
 		temperatureSensors = new ArrayList<TemperatureSensor>();
 		loadUserFromFile(userFile, id);
 		loadSensorsFromFile(fileName);
-		System.out.print("How many: "+ temperatureSensors.size());
+		System.out.print("How many motions: "+ motionSensors.size());
+		System.out.print("How many temps: "+ temperatureSensors.size());
 		
 		
 		
 		
 	}
+	/**
+	 * @return the fromTime
+	 */
+	public LocalTime getFromTime() {
+		return fromTime;
+	}
+
+	/**
+	 * @param fromTime the fromTime to set
+	 */
+	public void setFromTime(String fromTime) {
+		this.fromTime = LocalTime.parse(fromTime);
+	}
+
+	/**
+	 * @return the toTime
+	 */
+	public LocalTime getToTime() {
+		return toTime;
+	}
+
+	/**
+	 * @param toTime the toTime to set
+	 */
+	public void setToTime(String toTime) {
+		this.toTime = LocalTime.parse(toTime);
+	}
+
 	/**
 	 * @return the motionSensors
 	 */
@@ -74,6 +106,31 @@ public class AlarmSystem implements Observer{
 	 */
 	public FireBilling getBillingFire() {
 		return billingFire;
+	}
+	
+	public Boolean checkTemperatureSensors (String location) {
+		currentTime = LocalTime.now();
+		for(TemperatureSensor elem : temperatureSensors){
+			if (elem.getLocation().equals(location) ) {
+				if (elem.tripSensor(fromTime, toTime)) {
+					return true;
+				}
+				
+			}
+		}
+		return false;
+	
+	}
+	public Boolean checkMotionSensors (String location) {
+		for(MotionSensor elem : motionSensors){
+			if (elem.getLocation().equals(location) ) {
+				if (elem.tripSensor(fromTime, toTime)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	
 	}
 	
 	

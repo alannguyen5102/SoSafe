@@ -33,16 +33,17 @@ import javax.swing.SwingUtilities;
 
 public class ControlPanelGUI {
 	Thread aWorker;
-	Display display = new Display();
 	String userId = null, userName = null, password = null, hsPass = null;
+	Display display = new Display();
+
+	Simulator simulate = new Simulator();
 	AlarmSystem soSafe;
 	LocalTime fromTime = LocalTime.MIN;
 	LocalTime toTime = LocalTime.MAX;
-	Boolean enteredPassword;
-	
+	  
 	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
 		this.soSafe = soSafe;
-		enteredPassword = false;
+
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);
@@ -151,9 +152,7 @@ public class ControlPanelGUI {
 							public void run() {
 								if(jtb.isSelected())
 								{
-									display.IntruderDetected();
-									soSafe.getMotionSensors().get(0).tripSensor();
-									JOptionPane.showInputDialog("Give Master Password");
+									simulate.SimulateIntruder(soSafe);
 									
 
 								}
@@ -185,9 +184,7 @@ public class ControlPanelGUI {
 							public void run() {
 								if(jtb.isSelected())
 								{
-									display.FirerDetected();
-									soSafe.getTemperatureSensors().get(0).tripSensor();
-									JOptionPane.showInputDialog("Give Master Password");
+									simulate.SimulateFire(soSafe);
 
 								}
 								else 
@@ -230,12 +227,14 @@ public class ControlPanelGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (setAlwaysRadioButtion.isSelected()) {
 					JOptionPane.showMessageDialog(null, "Always selected");
+					soSafe.setFromTime("00:00");
+					soSafe.setToTime("23:59:59.999999999");
 					
 					//by default set to always
 					//no need to save in file
 
 				} else if (setTimeRadioaButton.isSelected()) {
-					SetTime setTime = new SetTime();
+					SetTime setTime = new SetTime(soSafe);
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select a schedule mode");
