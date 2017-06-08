@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -34,9 +35,11 @@ public class ControlPanelGUI {
 	Thread aWorker;
 	Display display = new Display();
 	String userId = null, userName = null, password = null, hsPass = null;
-
-	public ControlPanelGUI() throws IOException, NoSuchAlgorithmException {
-
+	AlarmSystem soSafe;
+	LocalTime fromTime = LocalTime.MIN;
+	LocalTime toTime = LocalTime.MAX;
+	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
+		this.soSafe = soSafe;
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);
@@ -146,6 +149,7 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									display.IntruderDetected();
+									soSafe.getMotionSensors().get(0).tripSensor();
 									JOptionPane.showInputDialog("Give Master Password");
 									
 
@@ -179,6 +183,7 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									display.FirerDetected();
+									soSafe.getTemperatureSensors().get(0).tripSensor();
 									JOptionPane.showInputDialog("Give Master Password");
 
 								}
