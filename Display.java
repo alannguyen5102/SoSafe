@@ -13,6 +13,7 @@ public class Display {
 	JLabel label3;
 	JFrame fireDisplay;
 	JFrame intruderDisplay;
+	JFrame sprinklerDisplay;
 	public void Secured() {
 		
 		JPanel rootContainer = new JPanel();
@@ -89,5 +90,30 @@ public void FirerDetected(String location) {
 		fireDisplay.dispose();
 		fireDisplay.setVisible(false);
 	}
+	
+	
+	public void SprinklerTurnOn() {
+		sprinklerDisplay = new JFrame("Sprinkler");
 
+		JPanel rootContainer = new JPanel();
+		sprinklerDisplay.add(rootContainer);
+		rootContainer.setBackground(Color.BLUE);
+		ImageIcon icon = new ImageIcon("sprinkler.gif","Fire detected");
+		JLabel label1 = new JLabel("Image and Text", icon, JLabel.CENTER);
+		JLabel label3 = new JLabel(icon);
+		
+		rootContainer.add(label3);
+		sprinklerDisplay.pack();
+		sprinklerDisplay.setLocation(999,300);
+		sprinklerDisplay.setVisible(true);
+		sprinklerDisplay.setResizable(false);
+		
+	}
+	
+	public void SprinklerTurnOff() {
+		sprinklerDisplay.dispose();
+		sprinklerDisplay.setVisible(false);
+	}
+	
+	
 }

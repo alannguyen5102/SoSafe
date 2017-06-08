@@ -50,6 +50,7 @@ public class ConfigureWindow {
     JButton addSectionButton;
     JTextField addSectionTextField;
     JCheckBox fireAlarmCheck;
+    JCheckBox motionAlarmCheck;
     JTextField showTotalFeild = new JTextField(3);
 	String totalLineString = null;
 
@@ -132,8 +133,13 @@ public class ConfigureWindow {
 				{
 					makeSensorArray.add("F");
 				}
-				else{
-					makeSensorArray.add("M");
+				else if(motionAlarmCheck.isSelected())
+				{
+					makeUserArray.add("M");
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Select sensor type");
 				}
 				makeSensorArray.add("*");
 				makeSensorArray.add(totalLineString.toString());
@@ -191,7 +197,10 @@ public class ConfigureWindow {
 
     	
     }
-	public ConfigureWindow() throws IOException {
+	
+    
+    
+    public ConfigureWindow() throws IOException {
 		MakeFrame();
 		addSectionButton.addActionListener(new ActionListener() {
 			
@@ -242,6 +251,7 @@ public class ConfigureWindow {
 		//middle panel
 		JPanel setNamePanel = new OpaquePanel();
 		JPanel setPasswordPanel = new OpaquePanel();
+		JPanel setPhonePanel = new OpaquePanel();
 		JPanel setAddressPanel = new OpaquePanel();
 		JPanel addSensorPanel = new OpaquePanel();
 		JPanel showTotalSensorPanel = new OpaquePanel();
@@ -256,6 +266,7 @@ public class ConfigureWindow {
 		
 		middlePanel.add(setNamePanel);
 		middlePanel.add(setPasswordPanel);
+		middlePanel.add(setPhonePanel);
 		middlePanel.add(setAddressPanel);
 		middlePanel.add(addSensorPanel);
 		middlePanel.add(showTotalSensorPanel);
@@ -276,9 +287,15 @@ public class ConfigureWindow {
 		setPasswordLabel.setForeground(Color.WHITE);
 		
 		//TO-DO have to validate
-		setPasswordTextField = new JPasswordField(15);
+		setPasswordTextField = new JPasswordField(18);
 		setPasswordPanel.add(setPasswordLabel);
 		setPasswordPanel.add(setPasswordTextField);
+		
+		JLabel setPhoneNumberLabel = new JLabel("Phone");
+		JTextField setPhoneText = new JTextField(15);
+		setPhoneNumberLabel.setForeground(Color.WHITE);
+		setPhonePanel.add(setPhoneNumberLabel);
+		setPhonePanel.add(setPhoneText);
 		
 		JLabel setAddressLabel = new JLabel("Set Address:");
 		setNameLabel.setForeground(Color.WHITE);
@@ -304,12 +321,16 @@ public class ConfigureWindow {
 		JLabel totalSelectedSectionLabel = new JLabel("Total number of rooms newly selected: ");
 		showTotalFeild.setText("0");
 		
-		fireAlarmCheck = new JCheckBox("Include Fire Alarm System");
+		fireAlarmCheck = new JCheckBox("Fire Sensor");
+		motionAlarmCheck = new JCheckBox("Motion Sensor");
 		addSensorPanel.add(fireAlarmCheck);
+		addSensorPanel.add(motionAlarmCheck);
 		fireAlarmCheck.setSelected(false);
 		fireAlarmCheck.setBackground(Color.DARK_GRAY);
 		fireAlarmCheck.setForeground(Color.WHITE);
-		
+
+		motionAlarmCheck.setBackground(Color.DARK_GRAY);
+		motionAlarmCheck.setForeground(Color.WHITE);
 
 		
 		
@@ -371,7 +392,7 @@ public class ConfigureWindow {
 					//save result
 					
 					try {
-						userCount = countLines("users.txt");
+						userCount = countLines("user.txt");
 					} catch (IOException e4) {
 						// TODO Auto-generated catch block
 						e4.printStackTrace();
@@ -394,16 +415,12 @@ public class ConfigureWindow {
 					}
 					makeUserArray.add(enPass);
 					makeUserArray.add("*");
+					makeUserArray.add(setPhoneText.getText());
+					makeUserArray.add("*");
 					makeUserArray.add(setAddressTextField.getText());
 					makeUserArray.add("*");
-					if(fireAlarmCheck.isSelected())
-					{
-						makeUserArray.add("F");
-					}
-					else 
-					{
-						makeUserArray.add("M");
-					}
+					makeUserArray.add(setPhoneText.getText());
+					makeUserArray.add("*");
 					makeUserArray.add("*");
 					makeUserArray.add(emergencyContactTextFieldOne.getText());
 					makeUserArray.add("*");
@@ -415,7 +432,7 @@ public class ConfigureWindow {
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					
+					System.out.println(makeUserArray);
 					for (String str : makeUserArray) {
 						try {
 							writer.write(str);
@@ -478,12 +495,17 @@ public class ConfigureWindow {
 		}
 		makeSensorArray.add(userId);
 		makeSensorArray.add("*");
-		if(fireAlarmCheck.isSelected())
+		if(fireAlarmCheck.isSelected() && motionAlarmCheck.isSelected())
 		{
-			makeSensorArray.add("F");
+			makeUserArray.add("B");
 		}
-		else{
-			makeSensorArray.add("M");
+		else if(fireAlarmCheck.isSelected())
+		{
+			makeUserArray.add("F");
+		}
+		else if(motionAlarmCheck.isSelected()) 
+		{
+			makeUserArray.add("M");
 		}
 		makeSensorArray.add("*");
 		makeSensorArray.add(startingSensorId.toString());

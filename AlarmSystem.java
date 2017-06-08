@@ -26,8 +26,9 @@ public class AlarmSystem implements Observer{
 	private Boolean fireAlert;
 	private Boolean intruderAlert;
 	private LocalTime currentTime;
-	private LocalTime fromTime = LocalTime.NOON;
+	private LocalTime fromTime = LocalTime.MIN;
 	private LocalTime toTime = LocalTime.MAX;
+
 	
 
 	
@@ -164,15 +165,14 @@ public class AlarmSystem implements Observer{
 		String service = tokens[4];
 		String contact1 = tokens[5];
 		String contact2 = tokens[5];
-		
 		ArrayList<String> contacts = new ArrayList<String>();
 		contacts.add(contact1);
 		contacts.add(contact2);
-		if ("F".equals(tokens[4]) || "M".equals(tokens[4]) ) {
+		if ("B".equals(tokens[4]) || "M".equals(tokens[4]) ) {
 			
 			billingIntrusion = new IntruderBilling(id, name, address, contacts, "999");
 		}
-		if ("F".equals(tokens[4])) {
+		if ("B".equals(tokens[4]) || "F".equals(tokens[4])) {
 			billingFire = new FireBilling(id, name, address, contacts, "999");
 		}
 	}
@@ -185,13 +185,13 @@ public class AlarmSystem implements Observer{
 		Boolean alarmStatus = Boolean.valueOf(tokens[6]);
 		String fromTime = tokens[7];
 		String toTime = tokens[8];
-		if ( "F".equals(tokens[1]) || "M".equals(tokens[1]) ) {
+		if ( "B".equals(tokens[1]) || "M".equals(tokens[1]) ) {
 			MotionSensor newMotionSensor = new MotionSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
 			newMotionSensor.addObserver(this);
 			motionSensors.add(newMotionSensor);
 			billingIntrusion.incrementSensors();
 		}
-		if ("F".equals(tokens[1])) {
+		if ("B".equals(tokens[1]) || "F".equals(tokens[1])) {
 			TemperatureSensor newTemperatureSensor = new TemperatureSensor(sensorId, location, powerStatus, manualStatus, alarmStatus, fromTime, toTime);
 			newTemperatureSensor.addObserver(this);
 			temperatureSensors.add(newTemperatureSensor);
@@ -208,51 +208,65 @@ public class AlarmSystem implements Observer{
 		String message = (String)arg;
 		currentTime = LocalTime.now();
 		System.out.println(message);
-		callContacts(message);
-		//TODO timer?
 		
+
 		
 	}
 	
-	public Double generateBill() {
+	public void generateBill() {
 		Double total = 0.00;
-		if (motionSensors.size() > 0) {
-			total = billingIntrusion.generateTotalCharge() + billingFire.generateTotalCharge() - 60;
-		}
-		else {
-			total = billingIntrusion.generateTotalCharge() + billingFire.generateTotalCharge();
-		}
+		if (temperatureSensors.size() > 0 ) {
 		
-		return total;
+			billingFire.showCustomerInformation();
+			if (motionSensors.size() > 0)
+			{
+				billingFire.discount();
+			}
+			billingFire.showCharges();
+		}
+		if ( motionSensors.size() > 0) {
+			billingIntrusion.showCustomerInformation();
+			billingIntrusion.showCharges();
+		}
+			
+		
+	
+		
 	}
 	
-	public void callMonitoringService(String message) {
+	public void callMonitoringService(String message) throws NumberFormatException, IOException {
+		currentTime = LocalTime.now();
 		if ("FIRE".equals(message)) {
 			billingFire.incrementCall();
+			logCall(message, currentTime);
 		}
 		else if ("INTRUDER".equals(message)) {
 			billingIntrusion.incrementCall();
+		    logCall(message, currentTime);
 		}
 		else {
 			System.out.println("Error: Wrong Message");
+			logCall("Malfunction" , currentTime);
 		}
 	}
 	
 	public void callContacts(String message) {
 		if (motionSensors.size() > 0) {
+			String msg = new String(message + "| Calling: " + billingIntrusion.getCustomerContact() + ", " + billingIntrusion.getContactNumber().get(0) + ", " + billingIntrusion.getContactNumber().get(1) + " at " + currentTime.toString());
 			System.out.println("Calling ");
 			System.out.println(billingIntrusion.getCustomerContact());
 			System.out.println(billingIntrusion.getContactNumber().get(0));
 			System.out.println(billingIntrusion.getContactNumber().get(1));
 			
-			
+			 
 		}
 		else if (temperatureSensors.size() > 0) {
+			String msg = new String(message + "| Calling: " + billingFire.getCustomerContact() + ", " + billingFire.getContactNumber().get(0) + ", " + billingFire.getContactNumber().get(1) + " at " + currentTime.toString());
 			System.out.println("Calling ");
-			System.out.println(billingIntrusion.getCustomerContact());
-			System.out.println(billingIntrusion.getContactNumber().get(0));
-			System.out.println(billingIntrusion.getContactNumber().get(1));
-			
+			System.out.println(billingFire.getCustomerContact());
+			System.out.println(billingFire.getContactNumber().get(0));
+			System.out.println(billingFire.getContactNumber().get(1));
+//			
 		}
 		else {
 			System.out.println("Error: No Sensors");
@@ -265,8 +279,8 @@ public class AlarmSystem implements Observer{
 	 * @throws NumberFormatException
 	 * @throws IOException
 	 */
-	public void logCall(String message, LocalTime currentTime) throws NumberFormatException, IOException {
-		String logString = message + " occured at " + currentTime.toString();
+	public void logCall(String message, LocalTime time) throws NumberFormatException, IOException {
+		String logString = message + " occured at " + time.toString();
 		writeInfoToFile("log.txt", logString);
 	}
 	/* 

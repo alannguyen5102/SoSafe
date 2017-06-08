@@ -40,6 +40,7 @@ public class ControlPanelGUI {
 	AlarmSystem soSafe;
 	LocalTime fromTime = LocalTime.MIN;
 	LocalTime toTime = LocalTime.MAX;
+	LocalTime currentTime;
 	  
 	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
 		this.soSafe = soSafe;
@@ -143,6 +144,7 @@ public class ControlPanelGUI {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				currentTime = LocalTime.now();
 				aWorker = new Thread() {
 
 					public void run() {
@@ -153,7 +155,8 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									simulate.SimulateIntruder(soSafe);
-									
+							
+									//TODO
 
 								}
 								else 
@@ -185,7 +188,7 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									simulate.SimulateFire(soSafe);
-
+									
 								}
 								else 
 								{
@@ -212,7 +215,8 @@ public class ControlPanelGUI {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				System.out.println("Generating Bill...");
+				soSafe.generateBill();
 				
 			}
 		});

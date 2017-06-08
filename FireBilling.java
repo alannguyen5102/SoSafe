@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class FireBilling extends Billing {
 
+	private Double initialCharge = 300.00;
 	/**
 	 * @param serviceContractId
 	 * @param customerName
@@ -71,10 +72,10 @@ public class FireBilling extends Billing {
 	 * @see sosafesystems.Billing#getInitalCharge()
 	 */
 	@Override
-	public Double getInitalCharge() {
-		return 300.00;
-		// TODO NEED TO DO DISCOUNT
+	public Double getInitialCharge() {
+		return initialCharge;
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see sosafesystems.Billing#getSensorConstant()
@@ -83,5 +84,6 @@ public class FireBilling extends Billing {
 	public Double getSensorConstant() {
 		return 100.00;
 	}
+
 
 }

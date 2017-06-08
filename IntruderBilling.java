@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class IntruderBilling extends Billing {
 
+	private Double initialCharge = 200.00;
 	/**
 	 * @param serviceContractId
 	 * @param customerName
@@ -71,7 +72,7 @@ public class IntruderBilling extends Billing {
 	 * @see sosafesystems.Billing#getInitalCharge()
 	 */
 	@Override
-	public Double getInitalCharge() {
+	public Double getInitialCharge() {
 		return 200.00;
 	}
 

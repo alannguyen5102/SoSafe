@@ -4,6 +4,9 @@
 package sosafesystems;
 
 import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -25,6 +28,8 @@ public abstract class Billing implements Observer {
 	private Integer numSensors;
 	private Integer numCalls;
 	private Double totalCharge;
+	private Double initialCharge;
+	ArrayList<String> printBill = new ArrayList<String>();
 	
 	
 
@@ -106,6 +111,14 @@ public abstract class Billing implements Observer {
 
 
 
+
+	public Double getInitialCharge() {
+		return initialCharge;
+	}
+
+	public void discount() {
+		this.initialCharge = initialCharge * .80;
+	}
 
 	/**
 	 * @return the serviceContractId
@@ -260,10 +273,6 @@ public abstract class Billing implements Observer {
 		return getNumCalls().doubleValue() * getCallConstant();
 	}
 
-	/**
-	 * @return the initalCharge
-	 */
-	public abstract Double getInitalCharge();
 	
 	/**
 	 * @return the cost per sensor
@@ -283,29 +292,120 @@ public abstract class Billing implements Observer {
 	 * @returns the initial charge, sensor charge, and call charges
 	 */
 	public Double generateTotalCharge() {
-		return getInitalCharge() + getNumSensorsCharge() + getCallCharge();
+		return getInitialCharge() + getNumSensorsCharge() + getCallCharge();
 	}
 	
 	public void showCustomerInformation() {
+		
+		String temp = null;
 		System.out.println("Service Contract ID: " + this.serviceContractId);
+		temp = "Service Contract ID: " + this.serviceContractId;
+		printBill.add(temp);
+		printBill.add("\n");
+		
 		System.out.println("Customer Name      : " + this.customerName);
+		temp = "Customer Name      : " + this.customerName;
+		printBill.add(temp);
+		printBill.add("\n");
+		
 		System.out.println("Property Address   : " + this.addressProperty);
+		temp = "Property Address   : " + this.addressProperty;
+		printBill.add(temp);
+		printBill.add("\n");
+		
+		
+		
 		for(String elem : this.contactNumber) {
 			System.out.println("Contact Number     : " + elem);
+			temp = "Contact Number     : " + elem;
+			printBill.add(temp);
+			printBill.add("\n");
+			
 		}
 		System.out.println("Customer Contact   : " + this.customerContact);
-		System.out.println("Service From Date  : " + this.fromDate);
-		System.out.println("Service To Date    : " + this.toDate);
+		temp = "Customer Contact   : "+ this.customerContact;
+		printBill.add(temp);
+		printBill.add("\n");
 		
+		
+		System.out.println("Service From Date  : " + this.fromDate);
+		temp = "Service From Date  : "+ this.fromDate;
+		printBill.add(temp);
+		printBill.add("\n");
+		
+		
+		System.out.println("Service To Date    : " + this.toDate);
+		temp = "Service To Date    : "+ this.toDate;
+		printBill.add(temp);
+		printBill.add("\n");
 	}
 	
 	public void showCharges () {
-		System.out.println("Installation Charge: $" + getInitalCharge());
+		
+		printBill.add("\n");
+		printBill.add("\n");
+		printBill.add("\n");
+
+		String temp = null;
+		System.out.println("Installation Charge: $" + getInitialCharge());
+		temp = "Installation Charge: $" + getInitialCharge();
+		printBill.add(temp);
+		printBill.add("\n");
+		
 		System.out.println("Sensor Installation: $" + getNumSensorsCharge());
+		temp = "Sensor Installation: $" + getNumSensorsCharge();
+		printBill.add(temp);
+		printBill.add("\n");
+		
+		
 		System.out.println("----" + getSensorConstant() + "*" + getNumSensors());
+		temp = "----" + getSensorConstant() + "*" + getNumSensors();
+		printBill.add(temp);
+		printBill.add("\n");
+		
 		System.out.println("Monitoring Calls   : $" + getCallCharge());
+		temp = "Monitoring Calls   : $" + getCallCharge();
+		printBill.add(temp);
+		printBill.add("\n");
+		
+		
 		System.out.println("----" + getCallConstant() + "*" + getNumCalls());
+		temp = "----" + getCallConstant() + "*" + getNumCalls();
+		printBill.add(temp);
+		printBill.add("\n");
+		
+		
 		System.out.println("Total Cost: $" + generateTotalCharge());
+		temp = "Total Cost: $" + generateTotalCharge();
+		printBill.add(temp);
+		printBill.add("\n");
+		
+		
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter("bill.txt", true));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+
+		for (String str : printBill) {
+			try {
+				writer.write(str);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		try {
+			writer.newLine();
+			writer.close();
+			
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		
 	}
 	
 	/**
@@ -313,6 +413,7 @@ public abstract class Billing implements Observer {
 	 */
 	
 	public void incrementCall() {
+		System.out.println("Billing.java incrementCall");
 		this.numCalls++;
 	}
 	
