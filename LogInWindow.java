@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.OverlayLayout;
 
 public class LogInWindow {
-	AlarmSystem soSafe;
+
 	public LogInWindow() throws IOException {
 
 		JFrame frame = new JFrame("SoSafe Security System");
@@ -116,6 +116,7 @@ public class LogInWindow {
 					userReader = new BufferedReader(new FileReader("user.txt"));
 					String line;
 					while ((line = userReader.readLine()) != null) {
+						
 						String tokens[] = line.split("\\*");
 						userId = tokens[0];
 						userName = tokens[1];
@@ -133,8 +134,7 @@ public class LogInWindow {
 						if (userNameTextField.getText().equals(userName) && enPass.equals(password)) {
 							
 							frame.dispose();
-							soSafe = new AlarmSystem("sensors.txt", "user.txt", userId);
-							ControlPanelGUI cpg = new ControlPanelGUI(soSafe);
+							ControlPanelGUI cpg = new ControlPanelGUI();
 						} else {
 							JOptionPane.showMessageDialog(null, "Username/Password doesn't match");
 							passwordTextField.setText("");

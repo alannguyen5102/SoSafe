@@ -9,75 +9,80 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 public class Display {
-	JFrame frame = new JFrame("Status");
+	JFrame frameDisplay = new JFrame("Status");
+	JFrame fireDisplay = new JFrame("Fire");
+	JFrame intruderDisplay = new JFrame("Intruder");
+	JLabel label3;
 	public void Secured() {
 		
 		JPanel rootContainer = new JPanel();
-		frame.add(rootContainer);
+		frameDisplay.add(rootContainer);
 		rootContainer.setBackground(Color.GREEN);
 		
 		ImageIcon icon = new ImageIcon("security.gif","Your home is secured");
 		JLabel label1 = new JLabel("Image and Text", icon, JLabel.CENTER);
-		JLabel label3 = new JLabel(icon);
+		label3 = new JLabel(icon);
 		
 		rootContainer.add(label3);
 		
-		frame.pack();
-		frame.setLocation(200,100);
-		frame.setVisible(true);
-		frame.setResizable(false);
+		frameDisplay.pack();
+		frameDisplay.setLocation(200,100); 
+		frameDisplay.setVisible(true);
+		frameDisplay.setResizable(false);
 	}
 	
 	public void Unsecured() {
-		frame.dispose();
+		label3 = null;
+
+		frameDisplay.dispose();
 	}
 
 	public void IntruderDetected() {
 		
-		frame.dispose();
-		frame.setVisible(false);
+		label3 = null;
 		JPanel rootContainer = new JPanel();
-		frame.add(rootContainer);
-		rootContainer.setBackground(Color.GREEN);
+		intruderDisplay.add(rootContainer);
+		rootContainer.setBackground(Color.RED);
 		ImageIcon icon = new ImageIcon("burgler.gif","Intruder detected");
 		JLabel label1 = new JLabel("Image and Text", icon, JLabel.CENTER);
 		JLabel label3 = new JLabel(icon);
 		
 		rootContainer.add(label3);
 		
-		frame.pack();
-		frame.setLocation(200,100);
-		frame.setVisible(true);
-		frame.setResizable(false);
+		intruderDisplay.pack();
+		intruderDisplay.setLocation(200,600);
+		intruderDisplay.setVisible(true);
+		intruderDisplay.setResizable(false);
 
 	}
 	
 	public void IntruderCaught() {
-		frame.dispose();
+		label3 = null;
+
+		intruderDisplay.dispose();
 
 	}
 	
 public void FirerDetected() {
-		frame.dispose();
-		frame.setVisible(false);
+	
+		label3 = null;
 		JPanel rootContainer = new JPanel();
-		frame.add(rootContainer);
-		rootContainer.setBackground(Color.GREEN);
+		fireDisplay.add(rootContainer);
+		rootContainer.setBackground(Color.ORANGE);
 		ImageIcon icon = new ImageIcon("fire.gif","Fire detected");
 		JLabel label1 = new JLabel("Image and Text", icon, JLabel.CENTER);
 		JLabel label3 = new JLabel(icon);
 		
 		rootContainer.add(label3);
-		System.out.println("inside fire method");
-		frame.pack();
-		frame.setLocation(200,100);
-		frame.setVisible(true);
-		frame.setResizable(false);
+		fireDisplay.pack();
+		fireDisplay.setLocation(800,100);
+		fireDisplay.setVisible(true);
+		fireDisplay.setResizable(false);
 
 	}
 	
 	public void FireCaught() {
-		frame.dispose();
+		fireDisplay.dispose();
 	}
 
 }

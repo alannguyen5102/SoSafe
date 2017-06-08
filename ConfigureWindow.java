@@ -10,12 +10,15 @@ import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
@@ -34,7 +37,7 @@ import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
 
 public class ConfigureWindow {
-	Integer i = 1;
+	Integer i;
 	JFrame frame;
 	JPanel rootContainer;
 	JTextField setNameTextField;
@@ -44,19 +47,25 @@ public class ConfigureWindow {
 	JTextField emergencyContactTextFieldTwo;
 	JButton closeButton;
     JButton saveButton;
+    JButton addSectionButton;
     JTextField addSectionTextField;
     JCheckBox fireAlarmCheck;
-    JTextField showTotalFeild;
+    JTextField showTotalFeild = new JTextField(3);
+	String totalLineString = null;
+
 	ArrayList<String> makeSensorArray = new ArrayList<String>();
 	ArrayList<String> makeUserArray = new ArrayList<String>();
-
-    
+	Integer startingSensorId;
+	Integer totalLine;
+	String userId = null;
+	
+	
     public ConfigureWindow(String readPassword) throws IOException
     {
     	MakeFrame();
-    	
     	BufferedReader userReader = null;
-		String userId = null, userName = null, password = null, address = null, ec1 = null, ec2 = null;
+		String  userName = null, password = null, address = null, ec1 = null, ec2 = null;
+
 		try {
 			userReader = new BufferedReader(new FileReader("user.txt"));
 			String line;
@@ -69,13 +78,9 @@ public class ConfigureWindow {
 			address = tokens[3];
 			ec1 = tokens[5];
 			ec2 = tokens[6];
+		
 			
-			setNameTextField.setText(userName);
-			setPasswordTextField.setText(password);
-			setAddressTextField.setText(address);
-			emergencyContactTextFieldOne.setText(ec1);
-			emergencyContactTextFieldTwo.setText(ec2);
-
+			
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
@@ -89,11 +94,122 @@ public class ConfigureWindow {
 		}
 		
 		
+		totalLine = countLines("sensors.txt");
+		setNameTextField.setText(userName);
+		setPasswordTextField.setText(""); // setPasswordTextField.setText(password);
+		setAddressTextField.setText(address);
+		emergencyContactTextFieldOne.setText(ec1);
+		emergencyContactTextFieldTwo.setText(ec2);
+		
+		totalLineString = totalLine.toString();
+		
+		showTotalFeild.setText(totalLineString);
+		
+		String sensorId = totalLine.toString();
+		
+		addSectionButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				if(addSectionTextField.getText().equals(""))
+				{
+					JOptionPane.showMessageDialog(null, "Give sensor a location name");
+				}
+				else{
+				try {
+					totalLine = countLines("sensors.txt");
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+
+				makeSensorArray.clear();
+				makeSensorArray.add(userId);
+				makeSensorArray.add("*");
+				if(fireAlarmCheck.isSelected())
+				{
+					makeSensorArray.add("F");
+				}
+				else{
+					makeSensorArray.add("M");
+				}
+				makeSensorArray.add("*");
+				makeSensorArray.add(totalLineString.toString());
+				makeSensorArray.add("*");
+				makeSensorArray.add(addSectionTextField.getText());
+				makeSensorArray.add("*");
+				makeSensorArray.add("0");
+				makeSensorArray.add("*");
+				makeSensorArray.add("0");
+				makeSensorArray.add("*");
+				makeSensorArray.add("0");
+				makeSensorArray.add("*");
+				makeSensorArray.add("0");
+				makeSensorArray.add("*");
+				makeSensorArray.add("00:00");
+				makeSensorArray.add("*");
+				makeSensorArray.add("23:00");
+	
+							
+				BufferedWriter writer = null;
+				try {
+					writer = new BufferedWriter(new FileWriter("sensors.txt", true));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+
+				for (String str : makeSensorArray) {
+					try {
+						writer.write(str);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				try {
+					writer.newLine();
+					JOptionPane.showMessageDialog(null, "Sensor added");
+					writer.close();
+					totalLine++;
+					String totalLineString = totalLine.toString();
+					showTotalFeild.setText(totalLineString);
+					
+
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+				makeSensorArray.clear();
+				addSectionTextField.setText("");
+				fireAlarmCheck.setSelected(false);
+			}
+			}
+		});
+		
+		
+		
 
     	
     }
 	public ConfigureWindow() throws IOException {
 		MakeFrame();
+		addSectionButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					MakeSensorData();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+
+		
 	}
 	
 	
@@ -178,7 +294,8 @@ public class ConfigureWindow {
 		//add sections to monitor
 		JLabel addSectionLabel = new JLabel("Add section");
 		addSectionTextField = new JTextField(15);
-		JButton addSectionButton = new JButton("Add");
+		
+		addSectionButton = new JButton("Add");
 		
 		
 		addSectionLabel.setForeground(Color.white);
@@ -187,7 +304,6 @@ public class ConfigureWindow {
 		includeFirePanel.add(addSectionButton);
 		
 		JLabel totalSelectedSectionLabel = new JLabel("Total number of rooms newly selected: ");
-		JTextField showTotalFeild = new JTextField(3);
 		showTotalFeild.setText("0");
 		
 		fireAlarmCheck = new JCheckBox("Include Fire Alarm System");
@@ -197,14 +313,6 @@ public class ConfigureWindow {
 		fireAlarmCheck.setForeground(Color.WHITE);
 		
 
-		
-		addSectionButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				MakeSensorData();
-			}
-		});
 		
 		
 		
@@ -253,12 +361,26 @@ public class ConfigureWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int dialogueResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this configuration?");
+				if(setNameTextField.getText().equals("") || setAddressTextField.getText().equals("") || setPasswordTextField.getText().equals("") || emergencyContactTextFieldOne.getText().equals("") || emergencyContactTextFieldTwo.getText().equals(""))
+				{
+					JOptionPane.showMessageDialog(null, "Field cannot be empty");
+				}
+				else{int dialogueResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this configuration?");
+				
+				Integer userCount = 0;
 				if(dialogueResult == 0)
 				{
 					//save result
 					
-					makeUserArray.add("1");
+					try {
+						userCount = countLines("users.txt");
+					} catch (IOException e4) {
+						// TODO Auto-generated catch block
+						e4.printStackTrace();
+					}
+					userCount++;
+					
+					makeUserArray.add(userCount.toString());
 					makeUserArray.add("*");
 					makeUserArray.add(setNameTextField.getText());
 					makeUserArray.add("*");
@@ -295,12 +417,7 @@ public class ConfigureWindow {
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					try {
-						writer.newLine();
-					} catch (IOException e2) {
-						e2.printStackTrace();
-					}
-
+					
 					for (String str : makeUserArray) {
 						try {
 							writer.write(str);
@@ -309,6 +426,7 @@ public class ConfigureWindow {
 						}
 					}
 					try {
+						writer.newLine();
 						writer.close();
 						JOptionPane.showMessageDialog(null, "Data successfully added");
 
@@ -335,7 +453,7 @@ public class ConfigureWindow {
 				{
 					//do nothing
 				}
-				
+				}
 			}
 		});
 		
@@ -345,10 +463,22 @@ public class ConfigureWindow {
 		
 	}
 
-	private void MakeSensorData() {
-		String sensorId = i.toString();
-
-		makeSensorArray.add("1");
+	private void MakeSensorData() throws IOException {
+		
+		Integer startingSensorId = countLines("sensors.txt");
+		showTotalFeild.setText(startingSensorId.toString());
+		startingSensorId++;
+		
+		Integer userCount = countLines("user.txt");
+		userCount++;
+		userId = userCount.toString();
+		String sensorId = startingSensorId.toString();
+		
+		if(addSectionTextField.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "Give sensor a location name");
+		}
+		makeSensorArray.add(userId);
 		makeSensorArray.add("*");
 		if(fireAlarmCheck.isSelected())
 		{
@@ -358,7 +488,7 @@ public class ConfigureWindow {
 			makeSensorArray.add("M");
 		}
 		makeSensorArray.add("*");
-		makeSensorArray.add(sensorId);
+		makeSensorArray.add(startingSensorId.toString());
 		makeSensorArray.add("*");
 		makeSensorArray.add(addSectionTextField.getText());
 		makeSensorArray.add("*");
@@ -370,9 +500,9 @@ public class ConfigureWindow {
 		makeSensorArray.add("*");
 		makeSensorArray.add("0");
 		makeSensorArray.add("*");
-		makeSensorArray.add("00");
+		makeSensorArray.add("00:00");
 		makeSensorArray.add("*");
-		makeSensorArray.add("23");
+		makeSensorArray.add("23:00");
 		
 		BufferedWriter writer = null;
 		try {
@@ -380,11 +510,7 @@ public class ConfigureWindow {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		try {
-			writer.newLine();
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
+		
 
 		for (String str : makeSensorArray) {
 			try {
@@ -394,10 +520,10 @@ public class ConfigureWindow {
 			}
 		}
 		try {
+			writer.newLine();
+			JOptionPane.showMessageDialog(null, "Sensor added");
 			writer.close();
-			String total = i.toString();
-			showTotalFeild.setText(total);
-			i++;
+			showTotalFeild.setText(sensorId);
 			
 
 		} catch (IOException e1) {
@@ -409,4 +535,27 @@ public class ConfigureWindow {
 		fireAlarmCheck.setSelected(false);
 	
 	}
+
+	public static int countLines(String filename) throws IOException {
+	    InputStream is = new BufferedInputStream(new FileInputStream(filename));
+	    try {
+	        byte[] c = new byte[1024];
+	        int count = 0;
+	        int readChars = 0;
+	        boolean empty = true;
+	        while ((readChars = is.read(c)) != -1) {
+	            empty = false;
+	            for (int i = 0; i < readChars; ++i) {
+	                if (c[i] == '\n') {
+	                    ++count;
+	                }
+	            }
+	        }
+	       System.out.println("count" + count);
+	        return (count == 0 && !empty) ? 1 : count;
+	    } finally {
+	        is.close();
+	    }
+	}
+
 }

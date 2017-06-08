@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalTime;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -35,12 +34,9 @@ public class ControlPanelGUI {
 	Thread aWorker;
 	Display display = new Display();
 	String userId = null, userName = null, password = null, hsPass = null;
-	AlarmSystem soSafe;
-	LocalTime fromTime = LocalTime.MIN;
-	LocalTime toTime = LocalTime.MAX;
 
-	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
-		this.soSafe = soSafe;
+	public ControlPanelGUI() throws IOException, NoSuchAlgorithmException {
+
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);
@@ -107,6 +103,7 @@ public class ControlPanelGUI {
 		monitorPanel.add(itrutionButton);
 		monitorPanel.add(fireButton);
 		
+		HashPassword hsp = new HashPassword();
 
 		// retrieving password for validation
 		BufferedReader userReader = null;
@@ -149,11 +146,7 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									display.IntruderDetected();
-									
-									//TODO HARD CODED TO FIRST SENSOR
-									soSafe.getMotionSensors().get(0).tripSensor();
 									JOptionPane.showInputDialog("Give Master Password");
-									//TODO Timer 
 									
 
 								}
@@ -167,7 +160,7 @@ public class ControlPanelGUI {
 					}
 				};// anonymous-class for aWorker
 
-				aWorker.start(); // So we don�t hold up the event	
+				aWorker.start(); // So we don’t hold up the event	
 				
 			}
 		});
@@ -186,9 +179,7 @@ public class ControlPanelGUI {
 								if(jtb.isSelected())
 								{
 									display.FirerDetected();
-									soSafe.getTemperatureSensors().get(0).tripSensor();
 									JOptionPane.showInputDialog("Give Master Password");
-									//TODO Timer 
 
 								}
 								else 
@@ -201,7 +192,7 @@ public class ControlPanelGUI {
 					}
 				};// anonymous-class for aWorker
 
-				aWorker.start(); // So we don�t hold up the event	
+				aWorker.start(); // So we don’t hold up the event	
 				
 			}			
 		});
@@ -224,12 +215,16 @@ public class ControlPanelGUI {
 
 			}
 		});
+		
 		setScheduleButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (setAlwaysRadioButtion.isSelected()) {
 					JOptionPane.showMessageDialog(null, "Always selected");
+					
+					//by default set to always
+					//no need to save in file
 
 				} else if (setTimeRadioaButton.isSelected()) {
 					SetTime setTime = new SetTime();
@@ -239,28 +234,25 @@ public class ControlPanelGUI {
 
 				}
 			}
+			
 		});
+		
 		configureButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				HashPassword hsp = new HashPassword();
-				try {
-					hsPass = hsp.hashPassword(passwordTextField.getText());
-				} catch (NoSuchAlgorithmException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				Password pass = new Password(passwordTextField.getText());
+		
+				Password pass = new Password(password);
+				
 
 			}
 		});
 
 		jtb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent ev) {
-				HashPassword hsp = new HashPassword();
 				try {
+					//encripted password
 					hsPass = hsp.hashPassword(passwordTextField.getText());
 				} catch (NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block
@@ -285,7 +277,7 @@ public class ControlPanelGUI {
 							}
 						};// anonymous-class for aWorker
 
-						aWorker.start(); // So we don�t hold up the event
+						aWorker.start(); // So we don’t hold up the event
 
 					} else if (ev.getStateChange() == ItemEvent.DESELECTED) {
 						jtb.setText("Turn On");
