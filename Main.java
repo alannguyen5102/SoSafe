@@ -1,4 +1,5 @@
 package sosafesystems;
+
 import java.io.IOException;
 
 import javax.swing.SwingUtilities;

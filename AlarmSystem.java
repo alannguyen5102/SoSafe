@@ -51,7 +51,7 @@ public class AlarmSystem implements Observer{
 	}
 	
 	public void addSensors(String line) {
-		String [] tokens = line.split(",");
+		String [] tokens = line.split("\\*");
 		int sensorId = Integer.parseInt(tokens[2]);
 		String location = tokens[3];
 		Boolean powerStatus = Boolean.valueOf(tokens[4]);
@@ -79,6 +79,7 @@ public class AlarmSystem implements Observer{
 	public void update(Observable o, Object arg) {
 		String message = (String)arg;
 		System.out.println(message);
+		callContacts(message);
 		
 	}
 	
@@ -100,6 +101,31 @@ public class AlarmSystem implements Observer{
 		}
 		else if ("INTRUDER".equals(message)) {
 			billingIntrusion.incrementCall();
+		}
+		else {
+			System.out.println("Error: Wrong Message");
+		}
+	}
+	
+	public void callContacts(String message) {
+		if (motionSensors.size() > 0) {
+			System.out.println("Calling ");
+			System.out.println(billingIntrusion.getCustomerContact());
+			System.out.println(billingIntrusion.getContactNumber().get(0));
+			System.out.println(billingIntrusion.getContactNumber().get(1));
+			
+			
+		}
+		else if (temperatureSensors.size() > 0) {
+			System.out.println("Calling ");
+			System.out.println(billingIntrusion.getCustomerContact());
+			System.out.println(billingIntrusion.getContactNumber().get(0));
+			System.out.println(billingIntrusion.getContactNumber().get(1));
+			
+		}
+		else {
+			System.out.println("Error: No Sensors");
+			
 		}
 	}
 	

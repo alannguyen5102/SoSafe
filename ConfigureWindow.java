@@ -1,4 +1,5 @@
 package sosafesystems;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,8 +10,14 @@ import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -21,22 +28,85 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
 
-public class ConfigureWindow implements ActionListener {
+public class ConfigureWindow {
+	Integer i = 1;
+	JFrame frame;
+	JPanel rootContainer;
+	JTextField setNameTextField;
+	JPasswordField setPasswordTextField;
+	JTextField setAddressTextField;
+	JTextField emergencyContactTextFieldOne;
+	JTextField emergencyContactTextFieldTwo;
+	JButton closeButton;
+    JButton saveButton;
+    JTextField addSectionTextField;
+    JCheckBox fireAlarmCheck;
+    JTextField showTotalFeild;
+	ArrayList<String> makeSensorArray = new ArrayList<String>();
+	ArrayList<String> makeUserArray = new ArrayList<String>();
 
+    
+    public ConfigureWindow(String readPassword) throws IOException
+    {
+    	MakeFrame();
+    	
+    	BufferedReader userReader = null;
+		String userId = null, userName = null, password = null, address = null, ec1 = null, ec2 = null;
+		try {
+			userReader = new BufferedReader(new FileReader("user.txt"));
+			String line;
+			line = userReader.readLine();
+			String tokens[] = line.split("\\*");
+			
+			userId = tokens[0];
+			userName = tokens[1];
+			password = tokens[2];
+			address = tokens[3];
+			ec1 = tokens[5];
+			ec2 = tokens[6];
+			
+			setNameTextField.setText(userName);
+			setPasswordTextField.setText(password);
+			setAddressTextField.setText(address);
+			emergencyContactTextFieldOne.setText(ec1);
+			emergencyContactTextFieldTwo.setText(ec2);
+
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			if (userReader != null) {
+				try {
+					userReader.close();
+				} catch (IOException er) {
+					er.printStackTrace();
+				}
+			}
+		}
+		
+		
+
+    	
+    }
 	public ConfigureWindow() throws IOException {
-
-		JFrame frame = new JFrame("SoSafe Security System: Setting up");
+		MakeFrame();
+	}
+	
+	
+	public void MakeFrame() throws IOException
+	{
+		frame = new JFrame("SoSafe Security System: Setting up");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);
 
 		ImagePanel imagePanel = new ImagePanel("banner.png");
 		imagePanel.setLocation(0, 0);
 
-		JPanel rootContainer = new OpaquePanel();
+		rootContainer = new OpaquePanel();
 		frame.add(rootContainer);
 		frame.add(imagePanel);
 
@@ -58,6 +128,7 @@ public class ConfigureWindow implements ActionListener {
 		//middle panel
 		JPanel setNamePanel = new OpaquePanel();
 		JPanel setPasswordPanel = new OpaquePanel();
+		JPanel setAddressPanel = new OpaquePanel();
 		JPanel addSensorPanel = new OpaquePanel();
 		JPanel showTotalSensorPanel = new OpaquePanel();
 		JPanel includeFirePanel = new OpaquePanel();
@@ -71,6 +142,7 @@ public class ConfigureWindow implements ActionListener {
 		
 		middlePanel.add(setNamePanel);
 		middlePanel.add(setPasswordPanel);
+		middlePanel.add(setAddressPanel);
 		middlePanel.add(addSensorPanel);
 		middlePanel.add(showTotalSensorPanel);
 		middlePanel.add(includeFirePanel);
@@ -80,7 +152,7 @@ public class ConfigureWindow implements ActionListener {
 		setNameLabel.setForeground(Color.WHITE);
 		
 		//TO-DO have to validate
-		JTextField setNameTextField = new JTextField(15);
+		setNameTextField = new JTextField(15);
 		setNamePanel.add(setNameLabel);
 		setNamePanel.add(setNameTextField);
 
@@ -90,35 +162,58 @@ public class ConfigureWindow implements ActionListener {
 		setPasswordLabel.setForeground(Color.WHITE);
 		
 		//TO-DO have to validate
-		JTextField setPasswordTextField = new JTextField(15);
+		setPasswordTextField = new JPasswordField(15);
 		setPasswordPanel.add(setPasswordLabel);
 		setPasswordPanel.add(setPasswordTextField);
 		
+		JLabel setAddressLabel = new JLabel("Set Address:");
+		setNameLabel.setForeground(Color.WHITE);
 		
+		//TO-DO have to validate
+		setAddressTextField = new JTextField(15);
+		setAddressPanel.add(setAddressLabel);
+		setAddressPanel.add(setAddressTextField);
+		setAddressLabel.setForeground(Color.WHITE);
+
 		//add sections to monitor
 		JLabel addSectionLabel = new JLabel("Add section");
-		JTextField addSectionTextField = new JTextField(15);
+		addSectionTextField = new JTextField(15);
 		JButton addSectionButton = new JButton("Add");
 		
 		
 		addSectionLabel.setForeground(Color.white);
 		addSensorPanel.add(addSectionLabel);
 		addSensorPanel.add(addSectionTextField);
-		addSensorPanel.add(addSectionButton);
+		includeFirePanel.add(addSectionButton);
 		
-		showTotalSensorPanel.setLayout(new FlowLayout());
-		JLabel totalSelectedSectionLabel = new JLabel("Total number of rooms selected: ");
-		JLabel showTotalLabel = new JLabel("5");
-		totalSelectedSectionLabel.setForeground(Color.WHITE);
-		showTotalLabel.setForeground(Color.WHITE);
-		showTotalSensorPanel.add(totalSelectedSectionLabel);
-		showTotalSensorPanel.add(showTotalLabel);
+		JLabel totalSelectedSectionLabel = new JLabel("Total number of rooms newly selected: ");
+		JTextField showTotalFeild = new JTextField(3);
+		showTotalFeild.setText("0");
 		
-		JCheckBox fireAlarmCheck = new JCheckBox("Include Fire Alarm System");
-		includeFirePanel.add(fireAlarmCheck);
+		fireAlarmCheck = new JCheckBox("Include Fire Alarm System");
+		addSensorPanel.add(fireAlarmCheck);
 		fireAlarmCheck.setSelected(false);
 		fireAlarmCheck.setBackground(Color.DARK_GRAY);
 		fireAlarmCheck.setForeground(Color.WHITE);
+		
+
+		
+		addSectionButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MakeSensorData();
+			}
+		});
+		
+		
+		
+		showTotalSensorPanel.setLayout(new FlowLayout());
+		totalSelectedSectionLabel.setForeground(Color.WHITE);
+		//showTotalLabel.setForeground(Color.WHITE);
+		showTotalSensorPanel.add(totalSelectedSectionLabel);
+		showTotalSensorPanel.add(showTotalFeild);
+		
        
 		JLabel emergencyContactLabelOne = new JLabel("Emergency Contact: 1");
 		JLabel emergencyContactLabelTwo = new JLabel("Emergency Contact: 2");
@@ -126,8 +221,8 @@ public class ConfigureWindow implements ActionListener {
 		emergencyContactLabelOne.setForeground(Color.WHITE);
 		emergencyContactLabelTwo.setForeground(Color.WHITE);
 		
-		JTextField emergencyContactTextFieldOne = new JTextField(15);
-		JTextField emergencyContactTextFieldTwo = new JTextField(15);
+		emergencyContactTextFieldOne = new JTextField(15);
+		emergencyContactTextFieldTwo = new JTextField(15);
 		
 		emergencyContactPanel.setLayout(new BoxLayout(emergencyContactPanel, BoxLayout.Y_AXIS));
 		emergencyContactPanel.add(emergencyContactOne);
@@ -141,15 +236,17 @@ public class ConfigureWindow implements ActionListener {
 		
 		bottomPanel.add(closePanel);
 		
-		JButton closeButton = new JButton("Close");
-        JButton saveButton = new JButton("Save");
+		closeButton = new JButton("Close");
+        saveButton = new JButton("Save");
 		closePanel.add(closeButton);
 		closePanel.add(saveButton);
+		
         closeButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);				
+				frame.dispose();
+				
 			}
 		});
         saveButton.addActionListener(new ActionListener() {
@@ -157,13 +254,73 @@ public class ConfigureWindow implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int dialogueResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this configuration?");
-				// TODO properly save configuration into file
 				if(dialogueResult == 0)
 				{
 					//save result
-					//start the system
+					
+					makeUserArray.add("1");
+					makeUserArray.add("*");
+					makeUserArray.add(setNameTextField.getText());
+					makeUserArray.add("*");
+					
+					//encrypting password
+					HashPassword hp = new HashPassword();
+					String enPass = null;
 					try {
-						ControlPanelGUI cpGUI = new ControlPanelGUI();
+						enPass = hp.hashPassword(setPasswordTextField.getText());
+					} catch (NoSuchAlgorithmException e3) {
+						// TODO Auto-generated catch block
+						e3.printStackTrace();
+					}
+					makeUserArray.add(enPass);
+					makeUserArray.add("*");
+					makeUserArray.add(setAddressTextField.getText());
+					makeUserArray.add("*");
+					if(fireAlarmCheck.isSelected())
+					{
+						makeUserArray.add("F");
+					}
+					else 
+					{
+						makeUserArray.add("M");
+					}
+					makeUserArray.add("*");
+					makeUserArray.add(emergencyContactTextFieldOne.getText());
+					makeUserArray.add("*");
+					makeUserArray.add(emergencyContactTextFieldTwo.getText());
+					
+					BufferedWriter writer = null;
+					try {
+						writer = new BufferedWriter(new FileWriter("user.txt", true));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					try {
+						writer.newLine();
+					} catch (IOException e2) {
+						e2.printStackTrace();
+					}
+
+					for (String str : makeUserArray) {
+						try {
+							writer.write(str);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+					try {
+						writer.close();
+						JOptionPane.showMessageDialog(null, "Data successfully added");
+
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+
+					makeUserArray.clear();
+					
+					//go back to login page
+					try {
+						LogInWindow lgin = new LogInWindow();
 						frame.dispose();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -185,12 +342,71 @@ public class ConfigureWindow implements ActionListener {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+	private void MakeSensorData() {
+		String sensorId = i.toString();
 
+		makeSensorArray.add("1");
+		makeSensorArray.add("*");
+		if(fireAlarmCheck.isSelected())
+		{
+			makeSensorArray.add("F");
+		}
+		else{
+			makeSensorArray.add("M");
+		}
+		makeSensorArray.add("*");
+		makeSensorArray.add(sensorId);
+		makeSensorArray.add("*");
+		makeSensorArray.add(addSectionTextField.getText());
+		makeSensorArray.add("*");
+		makeSensorArray.add("0");
+		makeSensorArray.add("*");
+		makeSensorArray.add("0");
+		makeSensorArray.add("*");
+		makeSensorArray.add("0");
+		makeSensorArray.add("*");
+		makeSensorArray.add("0");
+		makeSensorArray.add("*");
+		makeSensorArray.add("00");
+		makeSensorArray.add("*");
+		makeSensorArray.add("23");
+		
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter("sensors.txt", true));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			writer.newLine();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+
+		for (String str : makeSensorArray) {
+			try {
+				writer.write(str);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		try {
+			writer.close();
+			String total = i.toString();
+			showTotalFeild.setText(total);
+			i++;
+			
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		makeSensorArray.clear();
+		addSectionTextField.setText("");
+		fireAlarmCheck.setSelected(false);
+	
 	}
-
 }

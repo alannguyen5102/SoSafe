@@ -11,7 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -27,8 +31,12 @@ import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
 
 public class ControlPanelGUI {
+	Thread aWorker;
+	Display display = new Display();
+	String userId = null, userName = null, password = null, hsPass = null;
 
-	public ControlPanelGUI() throws IOException {
+	public ControlPanelGUI() throws IOException, NoSuchAlgorithmException {
+
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
 		frame.getContentPane().setLayout(overlay);
@@ -47,16 +55,18 @@ public class ControlPanelGUI {
 
 		frame.add(rootContainer);
 		frame.add(imagePanel);
+
 		rootContainer.add(topPanel);
 		rootContainer.add(middlePanel);
 		rootContainer.add(bottoPanel);
 
+		middlePanel.setLayout(new GridLayout(2, 1));
 		JToggleButton jtb = new JToggleButton("Turn On");
 		// jtb.setBackground(Color.red);
 
 		JPasswordField passwordTextField = new JPasswordField(15);
 		JLabel scheduleLabel = new JLabel("Schedule:");
-		scheduleLabel.setBackground(Color.WHITE);
+		scheduleLabel.setForeground(Color.WHITE);
 
 		// JLabel currentStateLabel = new JLabel("System has not started yet");
 
@@ -65,13 +75,17 @@ public class ControlPanelGUI {
 
 		JPanel schedulePanel = new OpaquePanel();
 		JPanel monitorPanel = new OpaquePanel();
+
 		middlePanel.add(schedulePanel);
 		middlePanel.add(monitorPanel);
 
 		schedulePanel.add(scheduleLabel);
 
 		JButton setScheduleButton = new JButton("Set");
-		JButton monitorButton = new JButton("Monitor");
+		JButton itrutionButton = new JButton("Simulate Intrution");
+		JButton fireButton = new JButton("Simulate Fire");
+		JButton configureButton = new JButton("Re-Configure");
+
 		JRadioButton setAlwaysRadioButtion = new JRadioButton("Always");
 		JRadioButton setTimeRadioaButton = new JRadioButton("Set time");
 		setAlwaysRadioButtion.setBounds(75, 50, 100, 30);
@@ -85,8 +99,103 @@ public class ControlPanelGUI {
 		schedulePanel.add(setTimeRadioaButton);
 		schedulePanel.add(setScheduleButton);
 
-		monitorPanel.add(monitorButton);
+		monitorPanel.add(configureButton);
+		monitorPanel.add(itrutionButton);
+		monitorPanel.add(fireButton);
+		
 
+		// retrieving password for validation
+		BufferedReader userReader = null;
+		try {
+			userReader = new BufferedReader(new FileReader("user.txt"));
+			String line;
+			while ((line = userReader.readLine()) != null) {
+
+				String tokens[] = line.split("\\*");
+				userId = tokens[0];
+				userName = tokens[1];
+				password = tokens[2];
+
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			if (userReader != null) {
+				try {
+					userReader.close();
+				} catch (IOException er) {
+					er.printStackTrace();
+				}
+			}
+		}
+
+
+
+		itrutionButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				aWorker = new Thread() {
+
+					public void run() {
+
+						SwingUtilities.invokeLater(new Runnable() {
+
+							public void run() {
+								if(jtb.isSelected())
+								{
+									display.IntruderDetected();
+									JOptionPane.showInputDialog("Give Master Password");
+									
+
+								}
+								else 
+								{
+									JOptionPane.showMessageDialog(null, "Alarm system offline");
+								}
+
+							}
+						});// End of SwingUtilities.invokeLater
+					}
+				};// anonymous-class for aWorker
+
+				aWorker.start(); // So we don�t hold up the event	
+				
+			}
+		});
+		
+		fireButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				aWorker = new Thread() {
+
+					public void run() {
+
+						SwingUtilities.invokeLater(new Runnable() {
+
+							public void run() {
+								if(jtb.isSelected())
+								{
+									display.FirerDetected();
+									JOptionPane.showInputDialog("Give Master Password");
+
+								}
+								else 
+								{
+									JOptionPane.showMessageDialog(null, "Alarm system offline");
+								}
+
+							}
+						});// End of SwingUtilities.invokeLater
+					}
+				};// anonymous-class for aWorker
+
+				aWorker.start(); // So we don�t hold up the event	
+				
+			}			
+		});
+		
 		rootContainer.add(bottoPanel);
 
 		JButton closeButton = new JButton("Close");
@@ -105,7 +214,6 @@ public class ControlPanelGUI {
 
 			}
 		});
-
 		setScheduleButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -122,13 +230,36 @@ public class ControlPanelGUI {
 				}
 			}
 		});
-		// bottoPanel.add(currentStateLabel);
+		configureButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				HashPassword hsp = new HashPassword();
+				try {
+					hsPass = hsp.hashPassword(passwordTextField.getText());
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Password pass = new Password(passwordTextField.getText());
+
+			}
+		});
+
 		jtb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent ev) {
-				if (passwordTextField.getText().equals("123")) {
+				HashPassword hsp = new HashPassword();
+				try {
+					hsPass = hsp.hashPassword(passwordTextField.getText());
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (hsPass.equals(password)) {
 					if (ev.getStateChange() == ItemEvent.SELECTED) {
 
-						Thread aWorker = new Thread() {
+						aWorker = new Thread() {
 
 							public void run() {
 
@@ -137,8 +268,8 @@ public class ControlPanelGUI {
 									public void run() {
 										jtb.setText("Turn Off");
 										passwordTextField.setText("");
-										ColorDisplay colorDisplay = new ColorDisplay();
-										
+										display.Secured();
+
 									}
 								});// End of SwingUtilities.invokeLater
 							}
@@ -148,16 +279,17 @@ public class ControlPanelGUI {
 
 					} else if (ev.getStateChange() == ItemEvent.DESELECTED) {
 						jtb.setText("Turn On");
-						// jtb.setBackground(Color.red);
-						// currentStateLabel.setText("Stopped");
+						display.Unsecured();
+						passwordTextField.setText("");
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Password doesn't match");
+					passwordTextField.setText("");
 				}
 			}
 		});
 
-		// frame.setSize(700, 700);
+		
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
