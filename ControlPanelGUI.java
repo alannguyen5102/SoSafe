@@ -1,4 +1,4 @@
-package sosafesystems;
+package sosafesystems
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalTime;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -31,18 +30,15 @@ import javax.swing.JToggleButton;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
 
+import sosafesystems.AlarmSystem;
+
 public class ControlPanelGUI {
 	Thread aWorker;
 	String userId = null, userName = null, password = null, hsPass = null;
 	Display display = new Display();
 
 	Simulator simulate = new Simulator();
-	AlarmSystem soSafe;
-	LocalTime fromTime = LocalTime.MIN;
-	LocalTime toTime = LocalTime.MAX;
-	  
-	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
-		this.soSafe = soSafe;
+	public ControlPanelGUI() throws IOException, NoSuchAlgorithmException {
 
 		JFrame frame = new JFrame("SoSafe Security System: Control Panel");
 		LayoutManager overlay = new OverlayLayout(frame.getContentPane());
@@ -152,7 +148,7 @@ public class ControlPanelGUI {
 							public void run() {
 								if(jtb.isSelected())
 								{
-									simulate.SimulateIntruder(soSafe);
+									simulate.SimulateIntruder();
 									
 
 								}
@@ -184,7 +180,7 @@ public class ControlPanelGUI {
 							public void run() {
 								if(jtb.isSelected())
 								{
-									simulate.SimulateFire(soSafe);
+									simulate.SimulateFire();
 
 								}
 								else 
@@ -203,7 +199,21 @@ public class ControlPanelGUI {
 		});
 		
 		rootContainer.add(bottoPanel);
-
+		JButton billButton = new JButton("Billing");
+		
+		
+		bottoPanel.add(billButton);
+		
+		billButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
 		JButton closeButton = new JButton("Close");
 		bottoPanel.add(closeButton);
 		closeButton.addActionListener(new ActionListener() {
@@ -227,14 +237,12 @@ public class ControlPanelGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (setAlwaysRadioButtion.isSelected()) {
 					JOptionPane.showMessageDialog(null, "Always selected");
-					soSafe.setFromTime("00:00");
-					soSafe.setToTime("23:59:59.999999999");
 					
 					//by default set to always
 					//no need to save in file
 
 				} else if (setTimeRadioaButton.isSelected()) {
-					SetTime setTime = new SetTime(soSafe);
+					SetTime setTime = new SetTime();
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select a schedule mode");
