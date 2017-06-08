@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalTime;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -35,6 +36,8 @@ public class ControlPanelGUI {
 	Display display = new Display();
 	String userId = null, userName = null, password = null, hsPass = null;
 	AlarmSystem soSafe;
+	LocalTime fromTime = LocalTime.MIN;
+	LocalTime toTime = LocalTime.MAX;
 
 	public ControlPanelGUI(AlarmSystem soSafe) throws IOException, NoSuchAlgorithmException {
 		this.soSafe = soSafe;
