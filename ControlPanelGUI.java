@@ -203,7 +203,19 @@ public class ControlPanelGUI {
 		});
 		
 		rootContainer.add(bottoPanel);
-
+		JButton billButton = new JButton("Billing");
+		
+		
+		bottoPanel.add(billButton);
+		
+		billButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		JButton closeButton = new JButton("Close");
 		bottoPanel.add(closeButton);
 		closeButton.addActionListener(new ActionListener() {
