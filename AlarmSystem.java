@@ -27,7 +27,7 @@ public class AlarmSystem implements Observer{
 	private Boolean intruderAlert;
 	private LocalTime currentTime;
 	private LocalTime fromTime = LocalTime.MIN;
-	private LocalTime toTime = LocalTime.NOON;
+	private LocalTime toTime = LocalTime.MAX;
 
 	
 
