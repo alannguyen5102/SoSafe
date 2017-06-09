@@ -188,6 +188,7 @@ public class ConfigureWindow {
 				makeSensorArray.clear();
 				addSectionTextField.setText("");
 				fireAlarmCheck.setSelected(false);
+				motionAlarmCheck.setSelected(false);
 			}
 			}
 		});
@@ -358,8 +359,8 @@ public class ConfigureWindow {
 		emergencyContactOne.add(emergencyContactLabelOne);
 		emergencyContactOne.add(emergencyContactTextFieldOne);
 		
-		emergencyContactTwo.add(emergencyContactLabelTwo);
-		emergencyContactTwo.add(emergencyContactTextFieldTwo);
+		emergencyContactOne.add(emergencyContactLabelTwo);
+		emergencyContactOne.add(emergencyContactTextFieldTwo);
 		
 		bottomPanel.add(closePanel);
 		
@@ -380,7 +381,7 @@ public class ConfigureWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(setNameTextField.getText().equals("") || setAddressTextField.getText().equals("") || setPasswordTextField.getText().equals("") || emergencyContactTextFieldOne.getText().equals("") || emergencyContactTextFieldTwo.getText().equals(""))
+				if((fireAlarmCheck.isSelected() || motionAlarmCheck.isSelected()) && setNameTextField.getText().equals("") || setAddressTextField.getText().equals("") || setPasswordTextField.getText().equals("") || emergencyContactTextFieldOne.getText().equals("") || emergencyContactTextFieldTwo.getText().equals(""))
 				{
 					JOptionPane.showMessageDialog(null, "Field cannot be empty");
 				}
@@ -401,6 +402,7 @@ public class ConfigureWindow {
 					
 					makeUserArray.add(userCount.toString());
 					makeUserArray.add("*");
+					
 					makeUserArray.add(setNameTextField.getText());
 					makeUserArray.add("*");
 					
@@ -415,12 +417,30 @@ public class ConfigureWindow {
 					}
 					makeUserArray.add(enPass);
 					makeUserArray.add("*");
+					
 					makeUserArray.add(setPhoneText.getText());
 					makeUserArray.add("*");
+					
 					makeUserArray.add(setAddressTextField.getText());
 					makeUserArray.add("*");
-					makeUserArray.add(setPhoneText.getText());
-					makeUserArray.add("*");
+
+					if(fireAlarmCheck.isSelected() && motionAlarmCheck.isSelected())
+					{
+						makeUserArray.add("B");
+					}
+					else if(fireAlarmCheck.isSelected())
+					{
+						makeUserArray.add("F");
+					}
+					else if(motionAlarmCheck.isSelected())
+					{
+						makeUserArray.add("M");
+					}
+					else 
+					{
+						JOptionPane.showMessageDialog(null, "Have to select sensor category");
+					}
+				
 					makeUserArray.add("*");
 					makeUserArray.add(emergencyContactTextFieldOne.getText());
 					makeUserArray.add("*");
@@ -432,7 +452,6 @@ public class ConfigureWindow {
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					System.out.println(makeUserArray);
 					for (String str : makeUserArray) {
 						try {
 							writer.write(str);

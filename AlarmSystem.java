@@ -161,19 +161,20 @@ public class AlarmSystem implements Observer{
 		String [] tokens = line.split("\\*");
 		Integer id = Integer.parseInt(tokens[0]);
 		String name = tokens[1];
-		String address = tokens[3];
-		String service = tokens[4];
-		String contact1 = tokens[5];
-		String contact2 = tokens[5];
+		String phone = tokens[3];
+		String address = tokens[4];
+		String service = tokens[5];
+		String contact1 = tokens[6];
+		String contact2 = tokens[7];
 		ArrayList<String> contacts = new ArrayList<String>();
 		contacts.add(contact1);
 		contacts.add(contact2);
-		if ("B".equals(tokens[4]) || "M".equals(tokens[4]) ) {
+		if ("B".equals(tokens[5]) || "M".equals(tokens[5]) ) {
 			
-			billingIntrusion = new IntruderBilling(id, name, address, contacts, "999");
+			billingIntrusion = new IntruderBilling(id, name, address, contacts, phone);
 		}
-		if ("B".equals(tokens[4]) || "F".equals(tokens[4])) {
-			billingFire = new FireBilling(id, name, address, contacts, "999");
+		if ("B".equals(tokens[5]) || "F".equals(tokens[5])) {
+			billingFire = new FireBilling(id, name, address, contacts, phone);
 		}
 	}
 	public void addSensors(String line) {
