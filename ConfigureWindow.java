@@ -67,46 +67,8 @@ public class ConfigureWindow {
     	BufferedReader userReader = null;
 		String  userName = null, password = null, address = null, ec1 = null, ec2 = null;
 
-		try {
-			userReader = new BufferedReader(new FileReader("user.txt"));
-			String line;
-			line = userReader.readLine();
-			String tokens[] = line.split("\\*");
-			
-			userId = tokens[0];
-			userName = tokens[1];
-			password = tokens[2];
-			address = tokens[3];
-			ec1 = tokens[5];
-			ec2 = tokens[6];
 		
-			
-			
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-			if (userReader != null) {
-				try {
-					userReader.close();
-				} catch (IOException er) {
-					er.printStackTrace();
-				}
-			}
-		}
-		
-		
-		totalLine = countLines("sensors.txt");
-		setNameTextField.setText(userName);
-		setPasswordTextField.setText(""); // setPasswordTextField.setText(password);
-		setAddressTextField.setText(address);
-		emergencyContactTextFieldOne.setText(ec1);
-		emergencyContactTextFieldTwo.setText(ec2);
-		
-		totalLineString = totalLine.toString();
-		
-		showTotalFeild.setText(totalLineString);
-		
-		String sensorId = totalLine.toString();
+		String sensorId = "1";
 		
 		addSectionButton.addActionListener(new ActionListener() {
 			
@@ -142,7 +104,7 @@ public class ConfigureWindow {
 					JOptionPane.showMessageDialog(null, "Select sensor type");
 				}
 				makeSensorArray.add("*");
-				makeSensorArray.add(totalLineString.toString());
+				makeSensorArray.add("1");
 				makeSensorArray.add("*");
 				makeSensorArray.add(addSectionTextField.getText());
 				makeSensorArray.add("*");
@@ -274,38 +236,13 @@ public class ConfigureWindow {
 		middlePanel.add(includeFirePanel);
 		middlePanel.add(emergencyContactPanel);
 		
-		JLabel setNameLabel = new JLabel("Set User Name:");
-		setNameLabel.setForeground(Color.WHITE);
 		
-		//TO-DO have to validate
-		setNameTextField = new JTextField(15);
-		setNamePanel.add(setNameLabel);
-		setNamePanel.add(setNameTextField);
 
-		//set password
+
+	
 		
-		JLabel setPasswordLabel = new JLabel("Set Password:");
-		setPasswordLabel.setForeground(Color.WHITE);
-		
-		//TO-DO have to validate
-		setPasswordTextField = new JPasswordField(18);
-		setPasswordPanel.add(setPasswordLabel);
-		setPasswordPanel.add(setPasswordTextField);
-		
-		JLabel setPhoneNumberLabel = new JLabel("Phone");
-		JTextField setPhoneText = new JTextField(15);
-		setPhoneNumberLabel.setForeground(Color.WHITE);
-		setPhonePanel.add(setPhoneNumberLabel);
-		setPhonePanel.add(setPhoneText);
-		
-		JLabel setAddressLabel = new JLabel("Set Address:");
-		setNameLabel.setForeground(Color.WHITE);
-		
-		//TO-DO have to validate
-		setAddressTextField = new JTextField(15);
-		setAddressPanel.add(setAddressLabel);
-		setAddressPanel.add(setAddressTextField);
-		setAddressLabel.setForeground(Color.WHITE);
+
+
 
 		//add sections to monitor
 		JLabel addSectionLabel = new JLabel("Add section");
@@ -343,24 +280,7 @@ public class ConfigureWindow {
 		showTotalSensorPanel.add(showTotalFeild);
 		
        
-		JLabel emergencyContactLabelOne = new JLabel("Emergency Contact: 1");
-		JLabel emergencyContactLabelTwo = new JLabel("Emergency Contact: 2");
 
-		emergencyContactLabelOne.setForeground(Color.WHITE);
-		emergencyContactLabelTwo.setForeground(Color.WHITE);
-		
-		emergencyContactTextFieldOne = new JTextField(15);
-		emergencyContactTextFieldTwo = new JTextField(15);
-		
-		emergencyContactPanel.setLayout(new BoxLayout(emergencyContactPanel, BoxLayout.Y_AXIS));
-		emergencyContactPanel.add(emergencyContactOne);
-		emergencyContactPanel.add(emergencyContactTwo);
-		
-		emergencyContactOne.add(emergencyContactLabelOne);
-		emergencyContactOne.add(emergencyContactTextFieldOne);
-		
-		emergencyContactOne.add(emergencyContactLabelTwo);
-		emergencyContactOne.add(emergencyContactTextFieldTwo);
 		
 		bottomPanel.add(closePanel);
 		
@@ -381,113 +301,10 @@ public class ConfigureWindow {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if((fireAlarmCheck.isSelected() || motionAlarmCheck.isSelected()) && setNameTextField.getText().equals("") || setAddressTextField.getText().equals("") || setPasswordTextField.getText().equals("") || emergencyContactTextFieldOne.getText().equals("") || emergencyContactTextFieldTwo.getText().equals(""))
-				{
-					JOptionPane.showMessageDialog(null, "Field cannot be empty");
-				}
-				else{int dialogueResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to save this configuration?");
+				String msg = new String("Saving");
+				JOptionPane.showMessageDialog(null, msg);
 				
-				Integer userCount = 0;
-				if(dialogueResult == 0)
-				{
-					//save result
-					
-					try {
-						userCount = countLines("user.txt");
-					} catch (IOException e4) {
-						// TODO Auto-generated catch block
-						e4.printStackTrace();
-					}
-					userCount++;
-					
-					makeUserArray.add(userCount.toString());
-					makeUserArray.add("*");
-					
-					makeUserArray.add(setNameTextField.getText());
-					makeUserArray.add("*");
-					
-					//encrypting password
-					HashPassword hp = new HashPassword();
-					String enPass = null;
-					try {
-						enPass = hp.hashPassword(setPasswordTextField.getText());
-					} catch (NoSuchAlgorithmException e3) {
-						// TODO Auto-generated catch block
-						e3.printStackTrace();
-					}
-					makeUserArray.add(enPass);
-					makeUserArray.add("*");
-					
-					makeUserArray.add(setPhoneText.getText());
-					makeUserArray.add("*");
-					
-					makeUserArray.add(setAddressTextField.getText());
-					makeUserArray.add("*");
-
-					if(fireAlarmCheck.isSelected() && motionAlarmCheck.isSelected())
-					{
-						makeUserArray.add("B");
-					}
-					else if(fireAlarmCheck.isSelected())
-					{
-						makeUserArray.add("F");
-					}
-					else if(motionAlarmCheck.isSelected())
-					{
-						makeUserArray.add("M");
-					}
-					else 
-					{
-						JOptionPane.showMessageDialog(null, "Have to select sensor category");
-					}
 				
-					makeUserArray.add("*");
-					makeUserArray.add(emergencyContactTextFieldOne.getText());
-					makeUserArray.add("*");
-					makeUserArray.add(emergencyContactTextFieldTwo.getText());
-					
-					BufferedWriter writer = null;
-					try {
-						writer = new BufferedWriter(new FileWriter("user.txt", true));
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-					for (String str : makeUserArray) {
-						try {
-							writer.write(str);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-					try {
-						writer.newLine();
-						writer.close();
-						JOptionPane.showMessageDialog(null, "Data successfully added");
-
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-
-					makeUserArray.clear();
-					
-					//go back to login page
-					try {
-						LogInWindow lgin = new LogInWindow();
-						frame.dispose();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				else if(dialogueResult == 1)
-				{
-					//do nothing
-				}
-				else if(dialogueResult == 2)
-				{
-					//do nothing
-				}
-				}
 			}
 		});
 		

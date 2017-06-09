@@ -29,6 +29,7 @@ public abstract class Billing implements Observer {
 	private Integer numCalls;
 	private Double totalCharge;
 	private Double initialCharge;
+	
 	ArrayList<String> printBill = new ArrayList<String>();
 	
 	
@@ -53,6 +54,7 @@ public abstract class Billing implements Observer {
 		this.numCalls = 0;
 		this.fromDate = new String("01-01");
 		this.toDate = new String("12-31");
+		this.initialCharge = 300.00;
 	}
 
 	/**
@@ -75,6 +77,7 @@ public abstract class Billing implements Observer {
 		this.numCalls = 0;
 		this.fromDate = fromDate;
 		this.toDate = toDate;
+		this.initialCharge = 300.00;
 	}
 
 
@@ -106,6 +109,7 @@ public abstract class Billing implements Observer {
 		this.numSensors = numSensors;
 		this.numCalls = numCalls;
 		this.totalCharge = totalCharge;
+		this.initialCharge = 300.00;
 	}
 
 
@@ -117,7 +121,7 @@ public abstract class Billing implements Observer {
 	}
 
 	public void discount() {
-		this.initialCharge = initialCharge * .80;
+		this.initialCharge = this.initialCharge * .80;
 	}
 
 	/**

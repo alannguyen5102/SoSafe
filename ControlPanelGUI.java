@@ -250,6 +250,8 @@ public class ControlPanelGUI {
 					//no need to save in file
 
 				} else if (setTimeRadioaButton.isSelected()) {
+					soSafe.setFromTime("00:00");
+					soSafe.setToTime("12:00");
 					SetTime setTime = new SetTime(soSafe);
 
 				} else {

@@ -57,7 +57,7 @@ public class Simulator {
 				String tokens[] = line.split("\\*");
 				location = tokens[3];
 				sensorLocation = location;
-				if (tokens[1].equals("F")) {
+				if (tokens[1].equals("F") || tokens[1].equals("B")){
 					listSensors.add(location);
 					sensorId = tokens[2];
 
@@ -100,8 +100,7 @@ public class Simulator {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String msg = new String("Fire" + "| Calling: " + system.getBillingFire().getCustomerContact() + ", " + system.getBillingFire().getContactNumber().get(0) + ", " + system.getBillingFire().getContactNumber().get(1) + " at " + currentTime.toString());
-				JOptionPane.showMessageDialog(null, msg);
+				
 				Thread passwordThread = new Thread() {
 					public void run() {
 						//Call Costumer
@@ -113,6 +112,8 @@ public class Simulator {
 							{
 								System.out.println("CALLING EMERGNY");
 								system.callMonitoringService("FIRE");
+								String msg = new String("Calling Emergency");
+								JOptionPane.showMessageDialog(null, msg);
 							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -139,7 +140,8 @@ public class Simulator {
 				if (listSensors.isEmpty()) {
 					JOptionPane.showMessageDialog(null, "No fire sensors found");
 				} else if (system.checkTemperatureSensors(sensorList.getSelectedItem().toString())) {
-					
+					String msg = new String("Fire" + "| Calling: " + system.getBillingFire().getCustomerContact() + ", " + system.getBillingFire().getContactNumber().get(0) + ", " + system.getBillingFire().getContactNumber().get(1) + " at " + currentTime.toString());
+					JOptionPane.showMessageDialog(null, msg);
 					display.FirerDetected(sensorList.getSelectedItem().toString());
 					system.callContacts("FIRE");
 					while(!passwordCheck) {
@@ -248,7 +250,7 @@ public class Simulator {
 				String tokens[] = line.split("\\*");
 				location = tokens[3];
 				sensorLocation = location;
-				if (tokens[1].equals("M")) {
+				if (tokens[1].equals("M") || tokens[1].equals("B")) {
 					listSensors.add(location);
 					sensorId = tokens[2];
 				}
@@ -286,8 +288,7 @@ public class Simulator {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String msg = new String("Intrusion" + "| Calling: " + system.getBillingIntrusion().getCustomerContact() + ", " + system.getBillingIntrusion().getContactNumber().get(0) + ", " + system.getBillingIntrusion().getContactNumber().get(1) + " at " + currentTime.toString());
-				JOptionPane.showMessageDialog(null, msg);
+				
 				Thread passwordThread = new Thread() {
 					public void run() {
 						//Call Costumer
@@ -298,6 +299,8 @@ public class Simulator {
 							{
 								System.out.println("CALLING EMERGNY");
 								system.callMonitoringService("INTRUDER");
+								String msg = new String("Calling Emergency");
+								JOptionPane.showMessageDialog(null, msg);
 							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -323,6 +326,8 @@ public class Simulator {
 				if (system.checkMotionSensors(sensorList.getSelectedItem().toString())) {
 					display.IntruderDetected(sensorList.getSelectedItem().toString());
 					system.callContacts("INTRUDER");
+					String msg = new String("Intrusion" + "| Calling: " + system.getBillingIntrusion().getCustomerContact() + ", " + system.getBillingIntrusion().getContactNumber().get(0) + ", " + system.getBillingIntrusion().getContactNumber().get(1) + " at " + currentTime.toString());
+					JOptionPane.showMessageDialog(null, msg);
 					while (!passwordCheck) {
 						passwordThread.start();
 					JTextField jpassword = new JPasswordField();
